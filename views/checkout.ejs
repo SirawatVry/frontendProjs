@@ -12,10 +12,17 @@
         <div id="checkout-items" class="mb-4">
             <% if (cart && cart.length > 0) { %>
                 <% cart.forEach(item => { %>
-                    <div class="p-4 bg-white shadow-md rounded mb-2">
-                        <h3><%= item.Product.Product_Name %> - <%= item.OrderDetail_Quantity %> pcs</h3>
-                        <p>Price: <%= item.Product.Product_Price %> ฿</p>
-                        <p>Total: <%= item.OrderDetail_Total_Price %> ฿</p>
+                    <div class="p-4 bg-white shadow-md rounded mb-2 flex justify-between items-center">
+                        <div>
+                            <h3><%= item.Product.Product_Name %> - <%= item.OrderDetail_Quantity %> pcs</h3>
+                            <p>Price: <%= item.Product.Product_Price %> ฿</p>
+                            <p>Total: <%= item.OrderDetail_Total_Price %> ฿</p>
+                        </div>
+                        <div class="flex items-center">
+                            <button onclick="decreaseQuantity(<%= item.OrderDetail_ID %>)" class="bg-yellow-500 text-white px-2 py-1 rounded">-</button>
+                            <button onclick="increaseQuantity(<%= item.OrderDetail_ID %>)" class="bg-green-500 text-white px-2 py-1 rounded">+</button>
+                            <button onclick="removeItem(<%= item.OrderDetail_ID %>)" class="bg-red-500 text-white px-2 py-1 rounded ml-2">Remove</button>
+                        </div>
                     </div>
                 <% }); %>
             <% } else { %>
@@ -27,6 +34,33 @@
     </main>
 
     <script>
+        async function removeItem(orderDetailId) {
+            await fetch("/cart/remove", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ customerId: 1, productId: orderDetailId }) // เปลี่ยนเป็น ID ของลูกค้าที่ถูกต้อง
+            });
+            location.reload(); // รีเฟรชหน้าเพื่ออัปเดตข้อมูล
+        }
+
+        async function decreaseQuantity(orderDetailId) {
+            await fetch("/cart/update", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ customerId: 1, productId: orderDetailId, change: -1 }) // ลดจำนวน
+            });
+            location.reload(); // รีเฟรชหน้าเพื่ออัปเดตข้อมูล
+        }
+
+        async function increaseQuantity(orderDetailId) {
+            await fetch("/cart/update", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ customerId: 1, productId: orderDetailId, change: 1 }) // เพิ่มจำนวน
+            });
+            location.reload(); // รีเฟรชหน้าเพื่ออัปเดตข้อมูล
+        }
+
         document.getElementById("confirm-order").addEventListener("click", async () => {
             // ทำการชำระเงินที่นี่ (เช่น บันทึกการชำระเงินในฐานข้อมูล)
             alert("Order confirmed! Thank you for your purchase.");
