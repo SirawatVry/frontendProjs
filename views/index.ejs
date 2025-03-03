@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&amp;display=swap" rel="stylesheet"/>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#f8f3e7] text-gray-800">
+
+    <!-- Header Section -->
+    <header class="bg-[#f8f3e7] py-4">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <div class="text-2xl font-bold">Coffee House</div>
+            <nav class="space-x-4">
+                <a class="text-gray-800" href="#">Home</a>
+                <a class="text-gray-800" href="#">Menu</a>
+                <a class="text-gray-800" href="#">About</a>
+            </nav>
+            <div>
+                <button class="bg-[#ffb84d] text-white px-4 py-2 rounded">Order Now</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Section: Menu and Coffee Description -->
+    <main class="container mx-auto px-4">
+        <!-- Hero Section -->
+        <section class="text-center py-12">
+            <h1 class="text-4xl font-bold">Enjoy your <span class="text-[#ffb84d]">coffee</span> before your activity</h1>
+            <p class="text-gray-600 mt-4">Boost your productivity with a perfect coffee in the morning.</p>
+            <button class="bg-[#ffb84d] text-white px-6 py-3 rounded mt-6">Order Now</button>
+        </section>
+
+
+
+        <!-- How to use delivery service -->
+        <section class="text-center py-12">
+            <h2 class="text-2xl font-bold">How to use delivery service</h2>
+            <div class="container mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8 px-4">
+                <div class="flex flex-col items-center">
+                    <i class="fas fa-coffee text-4xl text-[#ffb84d]"></i>
+                    <h3 class="text-lg font-semibold mt-4">Choose your coffee</h3>
+                    <p class="text-gray-600">Here are 20+ coffees for you</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <i class="fas fa-truck text-4xl text-[#ffb84d]"></i>
+                    <h3 class="text-lg font-semibold mt-4">We deliver it to you</h3>
+                    <p class="text-gray-600">Choose delivery service</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <i class="fas fa-mug-hot text-4xl text-[#ffb84d]"></i>
+                    <h3 class="text-lg font-semibold mt-4">Enjoy your coffee</h3>
+                    <p class="text-gray-600">Enjoy your freshly brewed coffee</p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Menu Section -->
+        <section class="py-12">
+            <h2 class="text-2xl font-bold text-center">Menu for you</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
+                <% if (menu && menu.length > 0) { %>
+                    <% menu.forEach(item => { %>
+                        <div class="bg-white rounded-lg shadow-md p-4 menu-item">
+                            <img src="/uploads/<%= item.Product_image %>"  
+                                 alt="<%= item.Product_Name %>" 
+                                 class="rounded-lg" width="300">
+                            <div class="mt-4">
+                                <h3 class="text-lg font-semibold"><%= item.Product_Name %></h3>
+                                <p class="text-gray-600"><%= item.Product_Price %> ฿</p>
+                                <p class="text-gray-500 mt-2"><%= item.Product_Description %></p>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <p>No menu items found.</p>
+                <% } %>
+            </div>
+        </section>
+        <!-- About Us Section -->
+        <section class="py-12 bg-[#f8f3e7]">
+            <div class="container mx-auto flex flex-col lg:flex-row items-center px-4">
+                <img alt="Coffee cup on table" class="rounded-lg shadow-lg" height="200" src="https://storage.googleapis.com/a1aa/image/CDNRwCAShrPfVaK7Ub0kUXAQDzb40BtBDVAzjspZasU.jpg" width="300"/>
+                <div class="mt-8 lg:mt-0 lg:ml-8">
+                    <h2 class="text-2xl font-bold">About us</h2>
+                    <p class="text-gray-600 mt-4">We provide quality coffee, and ready to deliver.</p>
+                    <button class="bg-[#ffb84d] text-white px-6 py-3 rounded mt-6">Learn More</button>
+                </div>
+            </div>
+        </section>
+        <!-- Discount Code Section -->
+        <section class="text-center py-12 bg-[#f8f3e7]">
+            <div class="container mx-auto px-4">
+                <h2 class="text-2xl font-bold">Type the code for 10% discount price</h2>
+                <div class="mt-6 flex justify-center">
+                    <input class="px-4 py-2 border rounded-l-lg" placeholder="Enter discount code" type="text"/>
+                    <button class="bg-[#ffb84d] text-white px-6 py-2 rounded-r-lg">Apply</button>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
