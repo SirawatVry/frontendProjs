@@ -19,9 +19,9 @@
                             <p>Total: <%= item.OrderDetail_Total_Price %> ฿</p>
                         </div>
                         <div class="flex items-center">
-                            <button onclick="decreaseQuantity(<%= item.OrderDetail_ID %>)" class="bg-yellow-500 text-white px-2 py-1 rounded">-</button>
-                            <button onclick="increaseQuantity(<%= item.OrderDetail_ID %>)" class="bg-green-500 text-white px-2 py-1 rounded">+</button>
-                            <button onclick="removeItem(<%= item.OrderDetail_ID %>)" class="bg-red-500 text-white px-2 py-1 rounded ml-2">Remove</button>
+                            <button onclick="decreaseQuantity('<%= item.OrderDetail_ID %>')" class="bg-yellow-500 text-white px-2 py-1 rounded">-</button>
+                            <button onclick="increaseQuantity('<%= item.OrderDetail_ID %>')" class="bg-green-500 text-white px-2 py-1 rounded">+</button>
+                            <button onclick="removeItem('<%= item.OrderDetail_ID %>')" class="bg-red-500 text-white px-2 py-1 rounded ml-2">Remove</button>
                         </div>
                     </div>
                 <% }); %>
