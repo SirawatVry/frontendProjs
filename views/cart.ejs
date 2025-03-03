@@ -1,36 +1,56 @@
-<main class="container mx-auto px-4">
-    <h1 class="text-2xl font-bold">Shopping Cart</h1>
-    <div id="cart-items" class="mt-4"></div>
-    <button class="bg-[#ffb84d] text-white px-6 py-3 rounded mt-4" id="checkout">Checkout</button>
-</main>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <main class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-4">Shopping Cart</h1>
+        <div id="cart-items" class="mt-4"></div>
+        <div class="mt-4 font-bold" id="total-price"></div>
+        <button class="bg-[#ffb84d] text-white px-6 py-3 rounded mt-4" id="checkout-button">Checkout</button>
+    </main>
 
-<script>
-    async function fetchCart() {
-        const response = await fetch("/cart/1");
-        const cartItems = await response.json();
-        let html = "";
-        
-        cartItems.forEach(item => {
-            html += `
-                <div class="p-4 bg-white shadow-md rounded">
-                    <h3>${item.Product.Product_Name} - ${item.Quantity} pcs</h3>
-                    <p>${item.Product.Product_Price} ฿</p>
-                    <button onclick="removeItem(${item.Cart_ID})">Remove</button>
-                </div>
-            `;
+    <script>
+        async function fetchCart() {
+            const response = await fetch("/cart/1"); // เปลี่ยนเป็น ID ของลูกค้าที่ถูกต้อง
+            const cartItems = await response.json();
+            let html = "";
+            let totalPrice = 0;
+
+            cartItems.forEach(item => {
+                const itemTotal = item.Product.Product_Price * item.OrderDetail_Quantity;
+                totalPrice += itemTotal;
+                html += 
+                    `<div class="p-4 bg-white shadow-md rounded mb-2">
+                        <h3>${item.Product.Product_Name} - ${item.OrderDetail_Quantity} pcs</h3>
+                        <p>${item.Product.Product_Price} ฿</p>
+                        <p>Total: ${itemTotal} ฿</p>
+                        <button onclick="removeItem(${item.OrderDetail_ID})" class="bg-red-500 text-white px-2 py-1 rounded">Remove</button>
+                    </div>`;
+            });
+
+            document.getElementById("cart-items").innerHTML = html;
+            document.getElementById("total-price").innerText = `Total Price: ${totalPrice} ฿`;
+        }
+
+        async function removeItem(orderDetailId) {
+            await fetch("/cart/remove", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ customerId: 1, productId: orderDetailId }) // เปลี่ยนเป็น ID ของลูกค้าที่ถูกต้อง
+            });
+            fetchCart();
+        }
+
+        document.getElementById("checkout-button").addEventListener("click", () => {
+            window.location.href = "http://localhost:4000/checkout/1"; // เปลี่ยนเป็น ID ของลูกค้าที่ถูกต้อง
         });
 
-        document.getElementById("cart-items").innerHTML = html;
-    }
-
-    async function removeItem(cartId) {
-        await fetch(`/cart/delete/${cartId}`, { method: "DELETE" });
         fetchCart();
-    }
-
-    document.getElementById("checkout").addEventListener("click", () => {
-        alert("Proceed to checkout");
-    });
-
-    fetchCart();
-</script>
+    </script>
+</body>
+</html>

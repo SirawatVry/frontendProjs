@@ -10,16 +10,16 @@ app.use(express.static('public'));
 
 // ดึงข้อมูลเมนูจากฐานข้อมูล
 app.get('/', async (req, res) => {
-    try {
-        const menu = await Product.findAll();
-        console.log(menu);  
-        res.render('index', { menu });
-    } catch (error) {
-        console.error('Error fetching menu:', error);
-        res.status(500).send('Error fetching menu');
-    }
+  try {
+    const menu = await Product.findAll();
+    console.log(menu);
+    res.render('index', { menu });
+  } catch (error) {
+    console.error('Error fetching menu:', error);
+    res.status(500).send('Error fetching menu');
+  }
 });
 
 app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Server is running at http://localhost:${port}`);
 });

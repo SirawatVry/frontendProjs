@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <main class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-4">Checkout</h1>
+        <div id="checkout-items" class="mb-4">
+            <% if (cart && cart.length > 0) { %>
+                <% cart.forEach(item => { %>
+                    <div class="p-4 bg-white shadow-md rounded mb-2">
+                        <h3><%= item.Product.Product_Name %> - <%= item.OrderDetail_Quantity %> pcs</h3>
+                        <p>Price: <%= item.Product.Product_Price %> ฿</p>
+                        <p>Total: <%= item.OrderDetail_Total_Price %> ฿</p>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p>No items in the cart.</p>
+            <% } %>
+        </div>
+        <div class="font-bold" id="total-price">Total Price: <%= total %> ฿</div>
+        <button class="bg-green-500 text-white px-6 py-3 rounded mt-4" id="confirm-order">Confirm Order</button>
+    </main>
+
+    <script>
+        document.getElementById("confirm-order").addEventListener("click", async () => {
+            // ทำการชำระเงินที่นี่ (เช่น บันทึกการชำระเงินในฐานข้อมูล)
+            alert("Order confirmed! Thank you for your purchase.");
+            // รีเซ็ตตระกร้า
+            await fetch("/cart/reset", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ customerId: 1 }) // เปลี่ยนให้เป็น ID ของลูกค้าที่ถูกต้อง
+            });
+            // Redirect to home or menu page
+            window.location.href = "/"; // เปลี่ยนไปยังหน้าเมนู
+        });
+    </script>
+</body>
+</html>

@@ -23,7 +23,7 @@
                 <a class="text-gray-800" href="#">About</a>
             </nav>
             <div>
-                <button class="bg-[#ffb84d] text-white px-4 py-2 rounded">Order Now</button>
+                <button class="bg-[#ffb84d] text-white px-4 py-2 rounded" id="checkout-button">Checkout</button>
             </div>
         </div>
     </header>
@@ -36,8 +36,6 @@
             <p class="text-gray-600 mt-4">Boost your productivity with a perfect coffee in the morning.</p>
             <button class="bg-[#ffb84d] text-white px-6 py-3 rounded mt-6">Order Now</button>
         </section>
-
-
 
         <!-- How to use delivery service -->
         <section class="text-center py-12">
@@ -61,7 +59,6 @@
             </div>
         </section>
 
-
         <!-- Menu Section -->
         <section class="py-12">
             <h2 class="text-2xl font-bold text-center">Menu for you</h2>
@@ -76,6 +73,12 @@
                                 <h3 class="text-lg font-semibold"><%= item.Product_Name %></h3>
                                 <p class="text-gray-600"><%= item.Product_Price %> ฿</p>
                                 <p class="text-gray-500 mt-2"><%= item.Product_Description %></p>
+                                <div class="flex items-center">
+                                    <button class="decrease-quantity" data-product-id="<%= item.Product_ID %>">-</button>
+                                    <input type="number" class="quantity-input" value="1" min="1" data-product-id="<%= item.Product_ID %>" style="width: 50px; text-align: center;">
+                                    <button class="increase-quantity" data-product-id="<%= item.Product_ID %>">+</button>
+                                    <button class="add-to-cart" data-product-id="<%= item.Product_ID %>">Add to Cart</button>
+                                </div>
                             </div>
                         </div>
                     <% }); %>
@@ -84,6 +87,7 @@
                 <% } %>
             </div>
         </section>
+
         <!-- About Us Section -->
         <section class="py-12 bg-[#f8f3e7]">
             <div class="container mx-auto flex flex-col lg:flex-row items-center px-4">
@@ -95,6 +99,7 @@
                 </div>
             </div>
         </section>
+
         <!-- Discount Code Section -->
         <section class="text-center py-12 bg-[#f8f3e7]">
             <div class="container mx-auto px-4">
@@ -105,6 +110,62 @@
                 </div>
             </div>
         </section>
+
+        <script>
+            document.querySelectorAll(".increase-quantity").forEach(button => {
+                button.addEventListener("click", (event) => {
+                    const productId = event.target.getAttribute("data-product-id");
+                    const input = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
+                    let quantity = parseInt(input.value);
+                    input.value = quantity + 1; // เพิ่มจำนวน
+                });
+            });
+
+            document.querySelectorAll(".decrease-quantity").forEach(button => {
+                button.addEventListener("click", (event) => {
+                    const productId = event.target.getAttribute("data-product-id");
+                    const input = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
+                    let quantity = parseInt(input.value);
+                    if (quantity > 1) {
+                        input.value = quantity - 1; // ลดจำนวน
+                    }
+                });
+            });
+
+            document.querySelectorAll(".add-to-cart").forEach(button => {
+                button.addEventListener("click", async () => {
+                    const productId = button.getAttribute("data-product-id");
+                    const input = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
+                    const quantity = parseInt(input.value);
+                    const customerId = 1; // เปลี่ยนให้เป็น ID ของลูกค้าที่ถูกต้อง
+
+                    try {
+                        const response = await fetch("http://localhost:4000/cart/add", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ customerId, productId, quantity })
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            alert(data.message); // แสดงข้อความที่ส่งกลับจาก API
+                        } else {
+                            const errorText = await response.text(); // อ่านเป็น text แทน
+                            console.error("Error response:", errorText);
+                            alert("Failed to add product: " + errorText); // แสดงข้อความผิดพลาด
+                        }
+                    } catch (error) {
+                        console.error("Error adding to cart:", error);
+                        alert("Error adding to cart: " + error.message);
+                    }
+                });
+            });
+
+            // Checkout button functionality
+            document.getElementById("checkout-button").addEventListener("click", () => {
+                window.location.href = "http://localhost:4000/checkout/1"; // เปลี่ยนให้เป็น ID ของลูกค้าที่ถูกต้อง
+            });
+        </script>
     </main>
 </body>
 </html>
