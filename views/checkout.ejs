@@ -61,18 +61,10 @@ async function increaseQuantity(orderDetailId) {
     location.reload(); // รีเฟรชหน้าเพื่ออัปเดตข้อมูล
 }
 
-        document.getElementById("confirm-order").addEventListener("click", async () => {
-            // ทำการชำระเงินที่นี่ (เช่น บันทึกการชำระเงินในฐานข้อมูล)
-            alert("Order confirmed! Thank you for your purchase.");
-            // รีเซ็ตตระกร้า
-            await fetch("/cart/reset", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ customerId: 1 }) // เปลี่ยนให้เป็น ID ของลูกค้าที่ถูกต้อง
-            });
-            // Redirect to home or menu page
-            window.location.href = "/"; // เปลี่ยนไปยังหน้าเมนู
-        });
+document.getElementById("confirm-order").addEventListener("click", async () => {
+    const customerId = 1; // เปลี่ยนให้เป็น ID ของลูกค้าที่ถูกต้อง
+    window.location.href = `/payment/${customerId}`; // ไปยังหน้า Payment
+});
     </script>
 </body>
 </html>
