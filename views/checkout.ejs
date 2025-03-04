@@ -19,9 +19,9 @@
                             <p>Total: <%= item.OrderDetail_Total_Price %> ฿</p>
                         </div>
                         <div class="flex items-center">
-                            <button onclick="decreaseQuantity('<%= item.OrderDetail_ID %>')" class="bg-yellow-500 text-white px-2 py-1 rounded">-</button>
-                            <button onclick="increaseQuantity('<%= item.OrderDetail_ID %>')" class="bg-green-500 text-white px-2 py-1 rounded">+</button>
-                            <button onclick="removeItem('<%= item.OrderDetail_ID %>')" class="bg-red-500 text-white px-2 py-1 rounded ml-2">Remove</button>
+                            <button onclick="decreaseQuantity(<%= item.Product.Product_ID %>)" class="bg-yellow-500 text-white px-2 py-1 rounded">-</button>
+                            <button onclick="increaseQuantity(<%= item.Product.Product_ID %>)" class="bg-green-500 text-white px-2 py-1 rounded">+</button>
+                            <button onclick="removeItem(<%= item.Product.Product_ID %>)" class="bg-red-500 text-white px-2 py-1 rounded ml-2">Remove</button>
                         </div>
                     </div>
                 <% }); %>
@@ -44,22 +44,22 @@
         }
 
         async function decreaseQuantity(orderDetailId) {
-            await fetch("/cart/update", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ customerId: 1, productId: orderDetailId, change: -1 }) // ลดจำนวน
-            });
-            location.reload(); // รีเฟรชหน้าเพื่ออัปเดตข้อมูล
-        }
+    await fetch("/cart/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ customerId: 1, productId: orderDetailId, change: -1 }) // ใช้ orderDetailId หรือ productId ตามที่ API ต้องการ
+    });
+    location.reload(); // รีเฟรชหน้าเพื่ออัปเดตข้อมูล
+}
 
-        async function increaseQuantity(orderDetailId) {
-            await fetch("/cart/update", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ customerId: 1, productId: orderDetailId, change: 1 }) // เพิ่มจำนวน
-            });
-            location.reload(); // รีเฟรชหน้าเพื่ออัปเดตข้อมูล
-        }
+async function increaseQuantity(orderDetailId) {
+    await fetch("/cart/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ customerId: 1, productId: orderDetailId, change: +1 }) // ใช้ orderDetailId หรือ productId ตามที่ API ต้องการ
+    });
+    location.reload(); // รีเฟรชหน้าเพื่ออัปเดตข้อมูล
+}
 
         document.getElementById("confirm-order").addEventListener("click", async () => {
             // ทำการชำระเงินที่นี่ (เช่น บันทึกการชำระเงินในฐานข้อมูล)
