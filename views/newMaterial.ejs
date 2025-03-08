@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Coffee Shop</title>
+    <title>Add New Material</title>
     <style>
         body {
  font-family: 'Arial', sans-serif;
@@ -158,7 +158,7 @@ h2 {
         <!-- Sidebar -->
         <nav class="sidebar">
             <h2 class="logo">
-                <a href="#">☕ CoffeeAdmin</a>
+                <a href="/admin">☕ CoffeeAdmin</a>
             </h2>
             <ul>
                 <li><a href="/customers">🛍️ Customers</a></li>
@@ -173,13 +173,19 @@ h2 {
             </ul>
         </nav>
 
-        <!-- Main Content -->
         <main class="content">
-            <h1>Welcome to Coffee Admin Dashboard</h1>
-            <p>ใช้แถบด้านข้างเพื่อจัดการระบบร้านกาแฟ</p>
-        </main>
-    </div>
-
-    <script src="/js/admin.js"></script>
+    <h1>Add New Material</h1>
+    <form action="/materials" method="POST">
+        <label for="name">Name:</label>
+        <input type="text" name="name" required>
+        <label for="quantity">Quantity:</label>
+        <input type="number" name="quantity" required>
+        <label for="unit">Unit:</label>
+        <input type="text" name="unit" required>
+        <label for="dateUpdate">Date Updated:</label>
+        <input type="date" name="dateUpdate" required>
+        <button type="submit">Add Material</button><br><br>
+    </form>
+    <a href="/materials">Back to Materials</a>
 </body>
 </html>

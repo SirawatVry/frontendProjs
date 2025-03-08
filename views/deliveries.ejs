@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Coffee Shop</title>
+    <title>Deliveries - Coffee Shop Admin</title>
     <style>
         body {
  font-family: 'Arial', sans-serif;
@@ -154,11 +154,11 @@ h2 {
  </style>
 </head>
 <body>
+    
     <div class="container">
-        <!-- Sidebar -->
         <nav class="sidebar">
             <h2 class="logo">
-                <a href="#">☕ CoffeeAdmin</a>
+                <a href="/admin">☕ CoffeeAdmin</a>
             </h2>
             <ul>
                 <li><a href="/customers">🛍️ Customers</a></li>
@@ -173,10 +173,36 @@ h2 {
             </ul>
         </nav>
 
-        <!-- Main Content -->
         <main class="content">
-            <h1>Welcome to Coffee Admin Dashboard</h1>
-            <p>ใช้แถบด้านข้างเพื่อจัดการระบบร้านกาแฟ</p>
+            <h1>Manage Deliveries</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Order ID</th>
+                        <th>Employee ID</th>
+                            <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% deliveries.forEach(delivery => { %>
+                        <tr>
+                            <td><%= delivery.Delivery_ID %></td>
+                            <td><%= delivery.Delivery_Status %></td>
+                            <td><%= delivery.Delivery_date %></td>
+                            <td><%= delivery.Delivery_Order_ID %></td>
+                            <td><%= delivery.Delivery_Employees_ID %></td>
+
+                            <td>
+                                <a href="/deliveries/edit/<%= delivery.Delivery_ID %>">Edit</a>
+                                <a href="/deliveries/delete/<%= delivery.Delivery_ID %>">Delete</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
         </main>
     </div>
 

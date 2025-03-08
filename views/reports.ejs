@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Coffee Shop</title>
+    <title>Reports - Coffee Shop Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
     <style>
         body {
  font-family: 'Arial', sans-serif;
@@ -155,10 +156,9 @@ h2 {
 </head>
 <body>
     <div class="container">
-        <!-- Sidebar -->
         <nav class="sidebar">
             <h2 class="logo">
-                <a href="#">☕ CoffeeAdmin</a>
+                <a href="/admin">☕ CoffeeAdmin</a>
             </h2>
             <ul>
                 <li><a href="/customers">🛍️ Customers</a></li>
@@ -173,13 +173,41 @@ h2 {
             </ul>
         </nav>
 
-        <!-- Main Content -->
         <main class="content">
-            <h1>Welcome to Coffee Admin Dashboard</h1>
-            <p>ใช้แถบด้านข้างเพื่อจัดการระบบร้านกาแฟ</p>
-        </main>
-    </div>
-
-    <script src="/js/admin.js"></script>
-</body>
-</html>
+            <h1>Reports</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer Name</th>
+                        <th>Address</th>
+                        <th>Phone Number</th>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Total Price</th>
+                        <th>Order Date</th>
+                        <th>Payment Type</th>
+                        <th>Promotion Discount %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% payments.forEach(payment => { %>
+                        <tr>
+                            <td><%= payment.Order_ID %></td>
+                            <td><%= payment.Customer_Name %></td>
+                            <td><%= payment.Customer_address %></td>
+                            <td><%= payment.Customer_Phonenumber %></td>
+                            <td><%= payment.Order_Product_Name %></td>
+                            <td><%= payment.Order_Quantity %></td>
+                            <td><%= payment.TotalPrice %></td>
+                            <td><%= payment.Order_Datetime %></td>
+                            <td><%= payment.Payment_Type %></td>
+                            <td><%= payment.Promotion_Discount ? payment.Promotion_Discount + '%' : '-' %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+            </main>
+        </div>
+        </body>
+        </html>

@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Coffee Shop</title>
+    <title>Edit Customer - Coffee Shop Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
     <style>
         body {
  font-family: 'Arial', sans-serif;
@@ -158,7 +159,7 @@ h2 {
         <!-- Sidebar -->
         <nav class="sidebar">
             <h2 class="logo">
-                <a href="#">☕ CoffeeAdmin</a>
+                <a href="/admin">☕ CoffeeAdmin</a>
             </h2>
             <ul>
                 <li><a href="/customers">🛍️ Customers</a></li>
@@ -173,10 +174,23 @@ h2 {
             </ul>
         </nav>
 
-        <!-- Main Content -->
         <main class="content">
-            <h1>Welcome to Coffee Admin Dashboard</h1>
-            <p>ใช้แถบด้านข้างเพื่อจัดการระบบร้านกาแฟ</p>
+            <h1>Edit Customer</h1>
+
+            <!-- Form to edit the customer -->
+            <form action="/customers/edit/<%= customer.Customer_ID %>" method="POST">
+                <label for="Customer_Name">ชื่อ:</label>
+                <input type="text" id="Customer_Name" name="Customer_Name" value="<%= customer.Customer_Name %>" required>
+            
+                <label for="Customer_Phonenumber">หมายเลขโทรศัพท์:</label>
+                <input type="text" id="Customer_Phonenumber" name="Customer_Phonenumber" value="<%= customer.Customer_Phonenumber %>" required>
+            
+                <label for="Customer_Address">ที่อยู่:</label>
+                <input type="text" id="Customer_Address" name="Customer_Address" value="<%= customer.Customer_address %>" required>
+
+                <button type="submit">บันทึกการเปลี่ยนแปลง</button><br>
+            </form>
+            <br><a href="/customers">Back to Customers</a
         </main>
     </div>
 

@@ -1,6 +1,6 @@
 const axios = require('axios');
 const express = require('express');
-const { Sequelize, sequelize, Product, Order, Payment, Customer ,MaterialProduct,Material,Delivery,Employees,customerId, Promotion} = require('../backendProjs/index.js');
+const { Sequelize, sequelize, Product, Order, Payment, Customer ,MaterialProduct,Material,Delivery,Employees,customerId,Promotion} = require('../backendProjs/index.js');
 const app = express();
 app.use(express.json());
 const port = 3000;
@@ -233,15 +233,12 @@ app.get('/shipping', async (req, res) => {
             ]
         });
 
-        console.log(JSON.stringify(deliveries, null, 2));  // ตรวจสอบข้อมูลที่ได้จาก query
         res.render('shipping', { deliveries });
     } catch (error) {
         console.error('Error fetching delivery data:', error);
         res.status(500).send('Error fetching delivery data');
     }
 });
-
-
 
 
 
@@ -266,9 +263,7 @@ app.post('/login', async (req, res) => {
             console.log('Admin found, redirecting to admin page'); // Debugging
             return res.redirect('/admin');
         }
-
-        console.log('Invalid phone number'); // Debugging
-        res.status(401).send('Invalid phone number');
+        return res.redirect(`/login`);    
     } catch (error) {
         console.error('Error during login:', error);
         res.status(500).send('Internal server error');
@@ -280,58 +275,9 @@ app.get('/menu', (req, res) => {
     res.send('Welcome to the Menu Page!');
 });
 
-// Route for admin page
-app.get('/admin', async (req, res) => {
-    try {
-        // ดึงข้อมูลจากหลายๆ ตาราง
-        const materials = await Material.findAll();
-        const customers = await Customer.findAll();
-        const employees = await Employees.findAll();
-        const products = await Product.findAll();
-        const orders = await Order.findAll();
-        const payments = await Payment.findAll();
-        const promotions = await Promotion.findAll();
-        const deliveries = await Delivery.findAll();
-
-        // เพิ่มการดึงข้อมูลจากการ JOIN ตารางต่างๆ
-        const paymentsWithDetails = await sequelize.query(`
-SELECT o.Order_ID, c.Customer_Name, c.Customer_address, c.Customer_Phonenumber,
-       p.Product_Name AS Order_Product_Name, o.Order_Quantity, 
-       o.Order_Total_Price AS TotalPrice, o.Order_Datetime, 
-       pay.Payment_Type, 
-       CASE 
-           WHEN promo.Promotion_Discount IS NOT NULL THEN promo.Promotion_Discount 
-           ELSE NULL 
-       END AS Promotion_Discount
-FROM orders o
-JOIN customers c ON o.Order_Customer_ID = c.Customer_ID
-JOIN products p ON o.Order_Product_ID = p.Product_ID
-JOIN payments pay ON o.Order_ID = pay.Payment_Order_ID
-LEFT JOIN promotions promo ON pay.Payment_Promotion_ID = promo.Promotion_ID;
-
-        `, { type: Sequelize.QueryTypes.SELECT });
-        
-        
-        
-        
-        // ส่งข้อมูลทั้งหมดไปยัง EJS
-        res.render('admin', {
-            materials,
-            customers,
-            employees,
-            products,
-            orders,
-            payments: paymentsWithDetails, // ส่งผลลัพธ์การชำระเงินที่ได้จากการ JOIN
-            promotions,
-            deliveries
-        });
-    } catch (error) {
-        console.error('Error fetching admin data:', error);
-        res.status(500).send('Error fetching admin data');
-    }
+app.get('/admin', (req, res) => {
+    res.render('admin');
 });
-
-
 app.get('/register', (req, res) => {
     res.render('register');
 });
@@ -360,281 +306,352 @@ app.post('/register', async (req, res) => {
         res.status(500).send('Internal server error');
     }
 });
-// Route to delete material
+// Route to get all customers
+app.get('/customers', async (req, res) => {
+    const customers = await Customer.findAll();
+    res.render('customers', { customers });
+});
 
+// Route to get the form to add a new customer
+app.get('/customers/new', (req, res) => {
+    res.render('newCustomer');
+});
 
+// Route to create a new customer
+app.post('/customers', async (req, res) => {
+    const { name, address, phoneNumber } = req.body;
+    await Customer.create({ Customer_Name: name, Customer_address: address, Customer_Phonenumber: phoneNumber });
+    res.redirect('/customers');
+});
 
-// Route to delete customer
-app.delete('/delete-customer', async (req, res) => {
-    const { id } = req.query;
+// Route to get the edit form for a customer
+app.get('/customers/edit/:id', async (req, res) => {
+    const customer = await Customer.findByPk(req.params.id);
+    res.render('editCustomer', { customer });
+});
+
+app.post('/customers/edit/:id', async (req, res) => {
+        console.log("Request body:", req.body); // Log the request body
+        const { Customer_Name,Customer_Phonenumber,Customer_Address} = req.body;
+        const customerId = req.params.id; // Get the customer ID from the URL
+        console.log("Customer data:", { Customer_Name, Customer_Address, Customer_Phonenumber, customerId });
+    console.log("Updating customer with ID:", customerId); // Log the ID
+    console.log("Customer data:", { Customer_Name, Customer_Address, Customer_Phonenumber }); // Log the customer data
+
+    const sql = `
+        UPDATE Customers
+        SET Customer_Name = ?, Customer_address = ?, Customer_Phonenumber = ?
+        WHERE Customer_ID = ?;
+    `;
+
     try {
-        await Customer.destroy({ where: { Customer_ID: id } });
-        res.status(200).send('Customer deleted successfully');
+        const [results] = await sequelize.query(sql, {
+            replacements: [Customer_Name, Customer_Address, Customer_Phonenumber, customerId]
+        });
+
+        if (results.affectedRows > 0) {
+            return res.redirect('/customers');
+        } else {
+            throw new Error('Customer not found');
+        }
     } catch (error) {
-        console.error('Error deleting customer:', error);
-        res.status(500).send('Error deleting customer');
+        console.error("Error updating customer:", error);
+        res.status(500).send("Internal Server Error: " + error.message);
     }
 });
 
-// Route to delete employee
-app.delete('/delete-employee', async (req, res) => {
-    const { id } = req.query;
-    try {
-        await Employees.destroy({ where: { Employees_ID: id } });
-        res.status(200).send('Employee deleted successfully');
-    } catch (error) {
-        console.error('Error deleting employee:', error);
-        res.status(500).send('Error deleting employee');
-    }
+
+// Route to delete a customer
+app.get('/customers/delete/:id', async (req, res) => {
+    await Customer.destroy({ where: { Customer_ID: req.params.id } });
+    res.redirect('/customers');
 });
 
-// Route to delete product
-app.delete('/delete-product', async (req, res) => {
-    const { id } = req.query;
-    try {
-        await Product.destroy({ where: { Product_ID: id } });
-        res.status(200).send('Product deleted successfully');
-    } catch (error) {
-        console.error('Error deleting product:', error);
-        res.status(500).send('Error deleting product');
-    }
+// Repeat similar routes for Products
+app.get('/products', async (req, res) => {
+    const products = await Product.findAll();
+    res.render('products', { products });
 });
 
-// Route to delete order
-app.delete('/delete-order', async (req, res) => {
-    const { id } = req.query;
-    try {
-        await Order.destroy({ where: { Order_ID: id } });
-        res.status(200).send('Order deleted successfully');
-    } catch (error) {
-        console.error('Error deleting order:', error);
-        res.status(500).send('Error deleting order');
-    }
+app.get('/products/new', (req, res) => {
+    res.render('newProduct');
 });
 
-// Route to delete payment
-app.delete('/delete-payment', async (req, res) => {
-    const { id } = req.query;
-    try {
-        await Payment.destroy({ where: { Payment_ID: id } });
-        res.status(200).send('Payment deleted successfully');
-    } catch (error) {
-        console.error('Error deleting payment:', error);
-        res.status(500).send('Error deleting payment');
-    }
+app.post('/products', async (req, res) => {
+    const { name, price, description, image } = req.body;
+    await Product.create({ Product_Name: name, Product_Price: price, Product_Description: description, Product_image: image });
+    res.redirect('/products');
 });
 
-// Route to delete promotion
-app.delete('/delete-promotion', async (req, res) => {
-    const { id } = req.query;
-    try {
-        await Promotion.destroy({ where: { Promotion_ID: id } });
-        res.status(200).send('Promotion deleted successfully');
-    } catch (error) {
-        console.error('Error deleting promotion:', error);
-        res.status(500).send('Error deleting promotion');
-    }
+app.get('/products/edit/:id', async (req, res) => {
+    const product = await Product.findByPk(req.params.id);
+    res.render('editProduct', { product });
 });
 
-// Route to delete delivery
-app.delete('/delete-delivery', async (req, res) => {
-    const { id } = req.query;
-    try {
-        await Delivery.destroy({ where: { Delivery_ID: id } });
-        res.status(200).send('Delivery deleted successfully');
-    } catch (error) {
-        console.error('Error deleting delivery:', error);
-        res.status(500).send('Error deleting delivery');
-    }
-});
-// Route to get edit material form
-app.get('/edit-material', async (req, res) => {
-    const { id } = req.query;
-    try {
-        const material = await Material.findByPk(id);
-        res.render('edit-material', { material });
-    } catch (error) {
-        console.error('Error fetching material for edit:', error);
-        res.status(500).send('Error fetching material for edit');
-    }
+app.post('/products/edit/:id', async (req, res) => {
+    const { name, price, description, image } = req.body;
+    await Product.update(
+        { Product_Name: name, Product_Price: price, Product_Description: description, Product_image: image },
+        { where: { Product_ID: req.params.id } }
+    );
+    res.redirect('/products');
 });
 
-// Route to get edit customer form
-app.get('/edit-customer', async (req, res) => {
-    const { id } = req.query;
-    try {
-        const customer = await Customer.findByPk(id);
-        res.render('edit-customer', { customer });
-    } catch (error) {
-        console.error('Error fetching customer for edit:', error);
-        res.status(500).send('Error fetching customer for edit');
-    }
+app.get('/products/delete/:id', async (req, res) => {
+    await Product.destroy({ where: { Product_ID: req.params.id } });
+    res.redirect('/products');
 });
 
-// Route to get edit employee form
-app.get('/edit-employee', async (req, res) => {
-    const { id } = req.query;
-    try {
-        const employee = await Employees.findByPk(id);
-        res.render('edit-employee', { employee });
-    } catch (error) {
-        console.error('Error fetching employee for edit:', error);
-        res.status(500).send('Error fetching employee for edit');
-    }
+// Repeat similar routes for Employees
+app.get('/employees', async (req, res) => {
+    const employees = await Employees.findAll();
+    res.render('employees', { employees });
 });
 
-// Route to get edit product form
-app.get('/edit-product', async (req, res) => {
-    const { id } = req.query;
-    try {
-        const product = await Product.findByPk(id);
-        res.render('edit-product', { product });
-    } catch (error) {
-        console.error('Error fetching product for edit:', error);
-        res.status(500).send('Error fetching product for edit');
-    }
+app.get('/employees/new', (req, res) => {
+    res.render('newEmployee');
 });
 
-// Route to get edit order form
-app.get('/edit-order', async (req, res) => {
-    const { id } = req.query;
-    try {
-        const order = await Order.findByPk(id);
-        res.render('edit-order', { order });
-    } catch (error) {
-        console.error('Error fetching order for edit:', error);
-        res.status(500).send('Error fetching order for edit');
-    }
+app.post('/employees', async (req, res) => {
+    const { name, position, phoneNumber } = req.body;
+    await Employees.create({ Employees_Name: name, Employees_Position: position, Employees_Phonenumber: phoneNumber });
+    res.redirect('/employees');
 });
 
-// Route to get edit payment form
-app.get('/edit-payment', async (req, res) => {
-    const { id } = req.query;
-    try {
-        const payment = await Payment.findByPk(id);
-        res.render('edit-payment', { payment });
-    } catch (error) {
-        console.error('Error fetching payment for edit:', error);
-        res.status(500).send('Error fetching payment for edit');
-    }
+app.get('/employees/edit/:id', async (req, res) => {
+    const employee = await Employees.findByPk(req.params.id);
+    res.render('editEmployee', { employee });
 });
 
-// Route to get edit promotion form
-app.get('/edit-promotion', async (req, res) => {
-    const { id } = req.query;
-    try {
-        const promotion = await Promotion.findByPk(id);
-        res.render('edit-promotion', { promotion });
-    } catch (error) {
-        console.error('Error fetching promotion for edit:', error);
-        res.status(500).send('Error fetching promotion for edit');
-    }
+app.post('/employees/edit/:id', async (req, res) => {
+    const { name, position, phoneNumber } = req.body;
+    await Employees.update(
+        { Employees_Name: name, Employees_Position: position, Employees_Phonenumber: phoneNumber },
+        { where: { Employees_ID: req.params.id } }
+    );
+    res.redirect('/employees');
 });
 
-// Route to get edit delivery form
-app.get('/edit-delivery', async (req, res) => {
-    const { id } = req.query;
-    try {
-        const delivery = await Delivery.findByPk(id);
-        res.render('edit-delivery', { delivery });
-    } catch (error) {
-        console.error('Error fetching delivery for edit:', error);
-        res.status(500).send('Error fetching delivery for edit');
-    }
+app.get('/employees/delete/:id', async (req, res) => {
+    await Employees.destroy({ where: { Employees_ID: req.params.id } });
+    res.redirect('/employees');
 });
-// Route to update material
-app.post('/update-material', async (req, res) => {
-    const { id, name, quantity } = req.body;
-    try {
-        await Material.update({ Material_Name: name, Material_Quantity: quantity }, { where: { Material_ID: id } });
-        res.redirect('/admin'); // Redirect to admin page after update
-    } catch (error) {
-        console.error('Error updating material:', error);
-        res.status(500).send('Error updating material');
-    }
+app.get('/payments', async (req, res) => {
+    const payments = await Payment.findAll();
+    res.render('payments', { payments });
 });
 
-// Route to update customer
-app.post('/update-customer', async (req, res) => {
-    const { id, name, phone } = req.body;
-    try {
-        await Customer.update({ Customer_Name: name, Customer_Phonenumber: phone }, { where: { Customer_ID: id } });
-        res.redirect('/admin'); // Redirect to admin page after update
-    } catch (error) {
-        console.error('Error updating customer:', error);
-        res.status(500).send('Error updating customer');
-    }
+app.get('/payments/new', (req, res) => {
+    res.render('newPayment');
 });
 
-// Route to update employee
-app.post('/update-employee', async (req, res) => {
-    const { id, name, position, phone } = req.body;
-    try {
-        await Employees.update({ Employees_Name: name, Employees_Position: position, Employees_Phonenumber: phone }, { where: { Employees_ID: id } });
-        res.redirect('/admin'); // Redirect to admin page after update
-    } catch (error) {
-        console.error('Error updating employee:', error);
-        res.status(500).send('Error updating employee');
-    }
+
+
+app.get('/payments/edit/:id', async (req, res) => {
+    const payment = await Payment.findByPk(req.params.id);
+    res.render('editPayment', { payment });
 });
 
-// Route to update product
-app.post('/update-product', async (req, res) => {
-    const { id, name, price, description } = req.body;
-    try {
-        await Product.update({ Product_Name: name, Product_Price: price, Product_Description: description }, { where: { Product_ID: id } });
-        res.redirect('/admin'); // Redirect to admin page after update
-    } catch (error) {
-        console.error('Error updating product:', error);
-        res.status(500).send('Error updating product');
-    }
+app.post('/payments/edit/:id', async (req, res) => {
+    const { type, amount, date, promotionId, status, orderId } = req.body;
+    await Payment.update(
+        { 
+            Payment_Type: type, 
+            Payment_Amount: amount, 
+            Payment_Date: date, 
+            Payment_Promotion_ID: promotionId, 
+            Payment_Status: status, 
+            Payment_Order_ID: orderId 
+        },
+        { where: { Payment_ID: req.params.id } }
+    );
+    res.redirect('/payments');
 });
 
-// Route to update order
-app.post('/update-order', async (req, res) => {
-    const { id, quantity, totalPrice } = req.body;
-    try {
-        await Order.update({ Order_Quantity: quantity, Order_Total_Price: totalPrice }, { where: { Order_ID: id } });
-        res.redirect('/admin'); // Redirect to admin page after update
-    } catch (error) {
-        console.error('Error updating order:', error);
-        res.status(500).send('Error updating order');
-    }
+app.get('/payments/delete/:id', async (req, res) => {
+    await Payment.destroy({ where: { Payment_ID: req.params.id } });
+    res.redirect('/payments');
 });
 
-// Route to update payment
-app.post('/update-payment', async (req, res) => {
-    const { id, type, amount } = req.body;
-    try {
-        await Payment.update({ Payment_Type: type, Payment_Amount: amount }, { where: { Payment_ID: id } });
-        res.redirect('/admin'); // Redirect to admin page after update
-    } catch (error) {
-        console.error('Error updating payment:', error);
-        res.status(500).send('Error updating payment');
-    }
+// Repeat similar routes for Promotions
+app.get('/promotions', async (req, res) => {
+    const promotions = await Promotion.findAll();
+    res.render('promotions', { promotions });
 });
 
-// Route to update promotion
-app.post('/update-promotion', async (req, res) => {
-    const { id, name, discount } = req.body;
-    try {
-        await Promotion.update({ Promotion_Name: name, Promotion_Discount: discount }, { where: { Promotion_ID: id } });
-        res.redirect('/admin'); // Redirect to admin page after update
-    } catch (error) {
-        console.error('Error updating promotion:', error);
-        res.status(500).send('Error updating promotion');
-    }
+app.get('/promotions/new', (req, res) => {
+    res.render('newPromotion');
 });
 
-// Route to update delivery
-app.post('/update-delivery', async (req, res) => {
-    const { id, status } = req.body;
+app.post('/promotions', async (req, res) => {
+    const { name, discount, startDate, endDate, description } = req.body;
+    await Promotion.create({ 
+        Promotion_Name: name, 
+        Promotion_Discount: discount, 
+        Promotion_Start_Date: startDate, 
+        Promotion_end_Date: endDate, 
+        Promotion_Description: description 
+    });
+    res.redirect('/promotions');
+});
+
+app.get('/promotions/edit/:id', async (req, res) => {
+    const promotion = await Promotion.findByPk(req.params.id);
+    res.render('editPromotion', { promotion });
+});
+
+app.post('/promotions/edit/:id', async (req, res) => {
+    const { name, discount, startDate, endDate, description } = req.body;
+    await Promotion.update(
+        { 
+            Promotion_Name: name, 
+            Promotion_Discount: discount, 
+            Promotion_Start_Date: startDate, 
+            Promotion_end_Date: endDate, 
+            Promotion_Description: description 
+        },
+        { where: { Promotion_ID: req.params.id } }
+    );
+    res.redirect('/promotions');
+});
+
+app.get('/promotions/delete/:id', async (req, res) => {
+    await Promotion.destroy({ where: { Promotion_ID: req.params.id } });
+    res.redirect('/promotions');
+});
+
+// Repeat similar routes for Deliveries
+app.get('/deliveries', async (req, res) => {
+    const deliveries = await Delivery.findAll();
+    res.render('deliveries', { deliveries });
+});
+
+app.get('/deliveries/new', (req, res) => {
+    res.render('newDelivery');
+});
+
+app.post('/deliveries', async (req, res) => {
+    const { status, date, orderId, employeeId } = req.body;
+    await Delivery.create({ 
+        Delivery_Status: status, 
+        Delivery_date: date, 
+        Delivery_Order_ID: orderId, 
+        Delivery_Employees_ID: employeeId 
+    });
+    res.redirect('/deliveries');
+});
+
+app.get('/deliveries/edit/:id', async (req, res) => {
+    const delivery = await Delivery.findByPk(req.params.id);
+    res.render('editDelivery', { delivery });
+});
+
+app.post('/deliveries/edit/:id', async (req, res) => {
+    const { status, date, orderId, employeeId } = req.body;
+    await Delivery.update(
+        { 
+            Delivery_Status: status, 
+            Delivery_date: date, 
+            Delivery_Order_ID: orderId, 
+            Delivery_Employees_ID: employeeId 
+        },
+        { where: { Delivery_ID: req.params.id } }
+    );
+    res.redirect('/deliveries');
+});
+
+app.get('/deliveries/delete/:id', async (req, res) => {
+    await Delivery.destroy({ where: { Delivery_ID: req.params.id } });
+    res.redirect('/deliveries');
+});
+
+// Repeat similar routes for Materials
+app.get('/materials', async (req, res) => {
+    const materials = await Material.findAll();
+    res.render('materials', { materials });
+});
+
+app.get('/materials/new', (req, res) => {
+    res.render('newMaterial');
+});
+
+app.post('/materials', async (req, res) => {
+    const { name, quantity, unit, dateUpdate } = req.body;
+    await Material.create({ 
+        Material_Name: name, 
+        Material_Quantity: quantity, 
+        Material_Unit: unit, 
+        Date_Update: dateUpdate 
+    });
+    res.redirect('/materials');
+});
+
+app.get('/materials/edit/:id', async (req, res) => {
+    const material = await Material.findByPk(req.params.id);
+    res.render('editMaterial', { material });
+});
+
+app.post('/materials/edit/:id', async (req, res) => {
+    const { name, quantity, unit, dateUpdate } = req.body;
+    await Material.update(
+        { 
+            Material_Name: name, 
+            Material_Quantity: quantity, 
+            Material_Unit: unit, 
+            Date_Update: dateUpdate 
+        },
+        { where: { Material_ID: req.params.id } }
+    );
+    res.redirect('/materials');
+});
+
+app.get('/materials/delete/:id', async (req, res) => {
+    await Material.destroy({ where: { Material_ID: req.params.id } });
+    res.redirect('/materials');
+});
+app.get('/reports', async (req, res) => {
     try {
-        await Delivery.update({ Delivery_Status: status }, { where: { Delivery_ID: id } });
-        res.redirect('/admin'); // Redirect to admin page after update
+        // Fetch data from various tables
+        const materials = await Material.findAll();
+        const customers = await Customer.findAll();
+        const employees = await Employees.findAll();
+        const products = await Product.findAll();
+        const orders = await Order.findAll();
+        const payments = await Payment.findAll();
+        const promotions = await Promotion.findAll();
+        const deliveries = await Delivery.findAll();
+
+        // Fetch payment details with JOINs
+        const paymentsWithDetails = await sequelize.query(`
+            SELECT o.Order_ID, c.Customer_Name, c.Customer_address, c.Customer_Phonenumber,
+                   p.Product_Name AS Order_Product_Name, o.Order_Quantity, 
+                   o.Order_Total_Price AS TotalPrice, o.Order_Datetime, 
+                   pay.Payment_Type, 
+                   CASE 
+                       WHEN promo.Promotion_Discount IS NOT NULL THEN promo.Promotion_Discount 
+                       ELSE NULL 
+                   END AS Promotion_Discount
+            FROM orders o
+            JOIN customers c ON o.Order_Customer_ID = c.Customer_ID
+            JOIN products p ON o.Order_Product_ID = p.Product_ID
+            JOIN payments pay ON o.Order_ID = pay.Payment_Order_ID
+            LEFT JOIN promotions promo ON pay.Payment_Promotion_ID = promo.Promotion_ID;
+        `, { type: Sequelize.QueryTypes.SELECT });
+
+        // Send all data to the EJS view
+        res.render('reports', {
+            materials,
+            customers,
+            employees,
+            products,
+            orders,
+            payments: paymentsWithDetails,
+            promotions,
+            deliveries
+        });
     } catch (error) {
-        console.error('Error updating delivery:', error);
-        res.status(500).send('Error updating delivery');
+        console.error('Error fetching report data:', error);
+        res.status(500).send('Error fetching report data');
     }
 });
 app.listen(port, () => {

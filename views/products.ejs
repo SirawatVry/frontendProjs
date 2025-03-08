@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Coffee Shop</title>
+    <title>Products - Coffee Shop Admin</title>
+    <link rel="stylesheet" href="http://localhost:4000/css/admin.css">
     <style>
         body {
  font-family: 'Arial', sans-serif;
@@ -155,10 +156,9 @@ h2 {
 </head>
 <body>
     <div class="container">
-        <!-- Sidebar -->
         <nav class="sidebar">
             <h2 class="logo">
-                <a href="#">☕ CoffeeAdmin</a>
+                <a href="/admin">☕ CoffeeAdmin</a>
             </h2>
             <ul>
                 <li><a href="/customers">🛍️ Customers</a></li>
@@ -173,10 +173,36 @@ h2 {
             </ul>
         </nav>
 
-        <!-- Main Content -->
         <main class="content">
-            <h1>Welcome to Coffee Admin Dashboard</h1>
-            <p>ใช้แถบด้านข้างเพื่อจัดการระบบร้านกาแฟ</p>
+            <h1>Manage Products</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Description</th>
+                        <th>Image</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% products.forEach(product => { %>
+                        <tr>
+                            <td><%= product.Product_ID %></td>
+                            <td><%= product.Product_Name %></td>
+                            <td><%= product.Product_Price %></td>
+                            <td><%= product.Product_Description %></td>
+                            <td><img src="<%= product.Product_image %>" alt="<%= product.Product_Name %>" width="50"></td>
+                            <td>
+                                <a href="/products/edit/<%= product.Product_ID %>">Edit</a>
+                                <a href="/products/delete/<%= product.Product_ID %>">Delete</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+            <a href="/products/new" class="button">Add New Product</a>
         </main>
     </div>
 

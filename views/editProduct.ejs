@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Coffee Shop</title>
+    <title>Edit Product</title>
     <style>
         body {
  font-family: 'Arial', sans-serif;
@@ -158,7 +158,7 @@ h2 {
         <!-- Sidebar -->
         <nav class="sidebar">
             <h2 class="logo">
-                <a href="#">☕ CoffeeAdmin</a>
+                <a href="/admin">☕ CoffeeAdmin</a>
             </h2>
             <ul>
                 <li><a href="/customers">🛍️ Customers</a></li>
@@ -173,13 +173,20 @@ h2 {
             </ul>
         </nav>
 
-        <!-- Main Content -->
         <main class="content">
-            <h1>Welcome to Coffee Admin Dashboard</h1>
-            <p>ใช้แถบด้านข้างเพื่อจัดการระบบร้านกาแฟ</p>
-        </main>
-    </div>
-
-    <script src="/js/admin.js"></script>
+    <h1>Edit Product</h1>
+    <form action="/products/edit/<%= product.Product_ID %>" method="POST">
+        <label for="name">Name:</label>
+        <input type="text" name="name" value="<%= product.Product_Name %>" required>
+        <label for="price">Price:</label>
+        <input type="number" name="price" value="<%= product.Product_Price %>" required>
+        <label for="description">Description:</label>
+        <input type="text" name="description" value="<%= product.Product_Description %>" required>
+        <label for="image">Image URL:</label>
+        <input type="text" name="image" value="<%= product.Product_image %>" required>
+        <button type="submit">Update Product</button>
+    </form>
+    <br><br>
+    <a href="/products">Back to Products</a>
 </body>
 </html>

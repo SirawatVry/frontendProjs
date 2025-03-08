@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customers - Coffee Shop Admin</title>
+    <link rel="stylesheet" href="http://localhost:4000/css/admin.css">
+    <style>
+           body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f1eb;
+}
+
+/* โครงสร้างหลัก */
+.container {
+    display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    background-color: #6F4E37; /* โทนกาแฟ */
+    color: white;
+    height: 100vh;
+    padding: 20px;
+    box-shadow: 3px 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar .logo {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin: 10px 0;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: white;
+    display: block;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.sidebar ul li a:hover {
+    background-color: #9C6B3B; /* โทนเข้มขึ้น */
+}
+
+/* ปุ่ม Logout */
+.logout {
+    color: #ffdddd;
+}
+
+.logout:hover {
+    background-color: #cc4444;
+}
+
+/* ส่วนเนื้อหา */
+.content {
+    flex-grow: 1;
+    padding: 30px;
+    text-align: center;
+}
+
+/* Styling for the table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+table th {
+    background-color: #f2f2f2;
+    color: #333;
+}
+
+table td {
+    background-color: #fff;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table a {
+    text-decoration: none;
+    color: #007bff;
+    margin-right: 10px;
+}
+
+table a:hover {
+    text-decoration: underline;
+}
+
+button {
+    padding: 5px 10px;
+    border: none;
+    background-color: #f44336;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #d32f2f;
+}
+
+form {
+    display: inline;
+}
+
+h2 {
+    margin-top: 20px;
+    color: #333;
+}
+                .logo a {
+            font-size: 24px; /* ขนาดตัวอักษร */
+            font-weight: bold; /* หนักตัวอักษร */
+            text-decoration: none; /* ไม่มีเส้นใต้ */
+            color: #fff; /* สีข้อความ */
+            background-color: #d35400; /* สีพื้นหลัง */
+            padding: 10px 20px; /* เพิ่มพื้นที่รอบข้อความ */
+            border-radius: 5px; /* มุมโค้งมน */
+            display: inline-block; /* ให้แสดงในบล็อกเดียว */
+            transition: background-color 0.3s ease; /* การเปลี่ยนสีพื้นหลังเมื่อโฮเวอร์ */
+        }
+
+        /* เพิ่มสีพื้นหลังเมื่อโฮเวอร์ */
+        .logo a:hover {
+            background-color: #e67e22; /* เปลี่ยนเป็นสีส้มอ่อนเมื่อโฮเวอร์ */
+        }
+
+        /* การจัดตำแหน่งให้ตรงกลาง */
+        .logo {
+            text-align: center; /* จัดกลาง */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <h2 class="logo">
+                <a href="/admin">☕ CoffeeAdmin</a>
+            </h2>
+            <ul>
+                <li><a href="/customers">🛍️ Customers</a></li>
+                <li><a href="/deliveries">🚚 Deliveries</a></li>
+                <li><a href="/employees">👨‍💼 Employees</a></li>
+                <li><a href="/payments">💳 Payments</a></li>
+                <li><a href="/products">📋 Products</a></li>
+                <li><a href="/promotions">🎁 Promotions</a></li>
+                <li><a href="/materials">📦 Materials</a></li>
+                <li><a href="/reports">📊 Reports</a></li>
+                <li><a href="/login" class="logout">🔑 Logout</a></li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <h1>Manage Customers</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Phone Number</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% customers.forEach(customer => { %>
+                        <tr>
+                            <td><%= customer.Customer_ID %></td>
+                            <td><%= customer.Customer_Name %></td>
+                            <td><%= customer.Customer_address %></td>
+                            <td><%= customer.Customer_Phonenumber %></td>
+                            <td>
+                                <a href="/customers/edit/<%= customer.Customer_ID %>">Edit</a>
+                                <a href="/customers/delete/<%= customer.Customer_ID %>">Delete</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+            <br>
+            <a href="/customers/new" class="button">Add New Customer</a>
+        </main>
+    </div>
+
+    <script src="/js/admin.js"></script>
+</body>
+</html>
