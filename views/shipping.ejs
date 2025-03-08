@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shipping Information</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#f8f3e7] text-gray-800">
+    <header class="bg-[#ffb84d] py-4">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <div class="text-2xl font-bold text-white">Shipping Information</div>
+            <nav class="space-x-4">
+                <a class="text-white hover:underline" href="/">Home</a>
+                <a class="text-white hover:underline" href="#">Menu</a>
+                <a class="text-white hover:underline" href="#">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-12">
+        <h2 class="text-3xl font-bold text-center mb-8">Delivery Information</h2>
+        <div class="mt-8">
+            <% if (deliveries && deliveries.length > 0) { %>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+                        <thead class="bg-[#ffb84d] text-white">
+                            <tr>
+                                <th class="py-3 px-4 border-b">Order ID</th>
+                                <th class="py-3 px-4 border-b">Customer Name</th> <!-- เพิ่มคอลัมน์ Customer Name -->
+                                <th class="py-3 px-4 border-b">Customer Address</th> <!-- เพิ่มคอลัมน์ Customer Address -->
+                                <th class="py-3 px-4 border-b">Product Name</th>
+                                <th class="py-3 px-4 border-b">Quantity</th>
+                                <th class="py-3 px-4 border-b">Total Price</th>
+                                <th class="py-3 px-4 border-b">Order Date Time</th>
+                                <th class="py-3 px-4 border-b">Delivery Status</th>
+                                <th class="py-3 px-4 border-b">Delivery Date</th>
+                                <th class="py-3 px-4 border-b">Delivery Employee Name</th>
+                                <th class="py-3 px-4 border-b">Employee Phone Number</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% deliveries.forEach(delivery => { %>
+                                <tr class="hover:bg-gray-100">
+                                    <td class="py-2 px-4 border-b" style="text-align: center;"><%= delivery.Order ? delivery.Order.Order_ID : 'N/A' %></td>
+                                    <td class="py-2 px-4 border-b" style="text-align: center;"><%= delivery.Order.Customer ? delivery.Order.Customer.Customer_Name : 'N/A' %></td> <!-- แสดง Customer Name -->
+                                    <td class="py-2 px-4 border-b" style="text-align: center;"><%= delivery.Order.Customer ? delivery.Order.Customer.Customer_address : 'N/A' %></td> <!-- แสดง Customer Address -->
+                                    <td class="py-2 px-4 border-b" style="text-align: center;"><%= delivery.Order.Product ? delivery.Order.Product.Product_Name : 'N/A' %></td>
+                                    <td class="py-2 px-4 border-b" style="text-align: center;"><%= delivery.Order ? delivery.Order.Order_Quantity : 'N/A' %></td>
+                                    <td class="py-2 px-4 border-b" style="text-align: center;"><%= delivery.Order ? delivery.Order.Order_Total_Price : 'N/A' %></td>
+                                    <td class="py-2 px-4 border-b" style="text-align: center;"><%= delivery.Order ? new Date(delivery.Order.Order_Datetime).toLocaleString() : 'N/A' %></td>
+                                    <td class="py-2 px-4 border-b" style="text-align: center;"><%= delivery.Delivery_Status %></td>
+                                    <td class="py-2 px-4 border-b" style="text-align: center;"><%= new Date(delivery.Delivery_date).toLocaleString() %></td>
+                                    <td class="py-2 px-4 border-b" style="text-align: center;"><%= delivery.Employee ? delivery.Employee.Employees_Name : 'N/A' %></td>
+                                    <td class="py-2 px-4 border-b" style="text-align: center;"><%= delivery.Employee ? delivery.Employee.Employees_Phonenumber : 'N/A' %></td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } else { %>
+                <p class="text-center text-gray-600">No delivery information available.</p>
+            <% } %>
+        </div>
+    </main>
+
+    <footer class="bg-[#f8f3e7] py-4">
+        <div class="container mx-auto text-center">
+            <p class="text-gray-600">© 2023 Coffee House. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

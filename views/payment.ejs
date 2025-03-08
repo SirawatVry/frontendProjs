@@ -6,8 +6,8 @@
     <title>Your Order</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> <!-- เพิ่มบรรทัดนี้ -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
         body { font-family: 'Roboto', sans-serif; }
     </style>
@@ -15,17 +15,8 @@
 <body class="bg-[#f5e9d7] text-black">
     <header class="flex justify-between items-center p-4 bg-[#f5e9d7]">
         <nav class="flex space-x-4">
-            <a class="text-black hover:underline" href="#">About us</a>
             <a class="text-black hover:underline" href="#">Menu</a>
-            <a class="text-black hover:underline" href="#">Shipping</a>
         </nav>
-        <div class="flex items-center space-x-4">
-            <div class="relative">
-                <input class="pl-8 pr-4 py-2 rounded-full border border-gray-300" placeholder="Cappuccino" type="text"/>
-                <i class="fas fa-search absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
-            </div>
-            <i class="fas fa-shopping-cart text-black"></i>
-        </div>
     </header>
     <main class="flex flex-col lg:flex-row p-8">
         <div class="lg:w-2/3">
@@ -45,7 +36,6 @@
                                 <span class="px-4 quantity"><%= quantity %></span>
                                 <button class="px-2 py-1 border border-gray-300" onclick="updateQuantity('<%= product.Product_ID %>', 1)">+</button>
                             </div>
-                            <button class="text-red-600" onclick="removeProduct('<%= product.Product_ID %>')">×</button>
                         </div>
                     </div>
                 </div>
@@ -139,7 +129,6 @@
         function updateQuantity(productId, change) {
             const quantityElement = document.querySelector(`#product-${productId} .quantity`);
             quantity += change;
-
             if (quantity < 1) {
                 quantity = 1; // Prevent quantity from going below 1
             }
@@ -156,7 +145,7 @@
 
         function selectPaymentMethod(method) {
             const paymentInfoDiv = document.getElementById('payment-info');
-            if (method === 'bank') {
+            if (method === 'Bank Transfer') {
                 paymentInfoDiv.innerHTML = `
                     <p>Please transfer the total amount to the following bank account:</p>
                     <ul>
@@ -166,7 +155,7 @@
                     </ul>
                     <p>After the transfer, please upload a receipt to complete your payment.</p>
                 `;
-            } else if (method === 'cod') {
+            } else if (method === 'COD') {
                 paymentInfoDiv.innerHTML = `
                     <p>You have selected "Cash on Delivery". Please have the total amount ready when the delivery arrives.</p>
                 `;
@@ -174,31 +163,43 @@
         }
 
         function handlePayment(event) {
-    event.preventDefault(); // Prevent the default form submission
-    console.log('Payment button clicked'); // ตรวจสอบว่าโค้ดทำงานถึงจุดนี้ไหม
+            event.preventDefault(); // Prevent the default form submission
+            console.log('Payment button clicked'); // Check if the code reaches this point
 
-    const productId = <%= product.Product_ID %>;
-    const quantity = <%= quantity %>;
-    const totalPrice = <%= totalPrice %>;
-    const paymentType = document.querySelector('input[name="paymentType"]:checked').value; // Get the selected payment type
-
-    // Send data to the server
-    axios.post('/process-payment', {
-        productId,
-        quantity,
-        totalPrice,
-        paymentType
-    })
-    .then(response => {
-        console.log('Payment successful:', response);
-        alert('Payment successful!');
-        window.location.href = '/'; // Redirect to home or another page
-    })
-    .catch(error => {
-        console.error('Error processing payment:', error);
-        alert('Error processing payment');
-    });
-}
+            const productId = <%= product.Product_ID %>;
+            const quantity = <%= quantity %>;
+            const totalPrice = <%= totalPrice %>;
+            const paymentType = document.querySelector('input[name="paymentType"]:checked').value; // Get the selected payment type
+            const promotionCode = document.getElementById('promotion-code').value; // Get the promotion code
+            const customerId = <%= customerId %>;
+            // Send data to the server
+            axios.post('/process-payment', {
+                productId,
+                quantity,
+                paymentType,
+                promotionCode,
+                customerId // ส่ง customerId ไปด้วย
+            })
+            .then(response => {
+                console.log('Payment successful:', response);
+                alert('Payment successful!');
+                window.location.href = '/'; // Redirect to home or another page
+            })
+            .catch(error => {
+                if (error.response && error.response.status === 400) {
+                    // Handle insufficient materials error
+                    const insufficientMaterials = error.response.data.insufficientMaterials;
+                    let message = 'Insufficient materials for the following items:\n';
+                    insufficientMaterials.forEach(item => {
+                        message += `Material ID: ${item.materialId}, Required: ${item.required}, Available: ${item.available}\n`;
+                    });
+                    alert(message);
+                } else {
+                    console.error('Error processing payment:', error);
+                    alert('Error processing payment');
+                }
+            });
+        }
 
         // Call this once on page load to initialize totals
         updateTotal();

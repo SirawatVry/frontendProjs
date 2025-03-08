@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#f8f3e7] text-gray-800">
+
+    <header class="bg-[#f8f3e7] py-4">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <div class="text-2xl font-bold">Admin Dashboard</div>
+            <div>
+                <a href="/" class="bg-[#ffb84d] text-white px-4 py-2 rounded">Home</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-6">Manage Data</h1>
+
+        <!-- Material Section -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Materials</h2>
+            <table class="min-w-full bg-white border border-gray-300">
+                <thead>
+                    <tr>
+                        <th class="border px-4 py-2">ID</th>
+                        <th class="border px-4 py-2">Name</th>
+                        <th class="border px-4 py-2">Quantity</th>
+                        <th class="border px-4 py-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% materials.forEach(material => { %>
+                        <tr>
+                            <td class="border px-4 py-2"><%= material.Material_ID %></td>
+                            <td class="border px-4 py-2"><%= material.Material_Name %></td>
+                            <td class="border px-4 py-2"><%= material.Material_Quantity %></td>
+                            <td class="border px-4 py-2">
+                                <button onclick="editMaterial(<%= material.Material_ID %>)" class="bg-blue-500 text-white px-2 py-1 rounded">Edit</button>
+                                <button onclick="deleteMaterial(<%= material.Material_ID %>)" class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Customer Section -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Customers</h2>
+            <table class="min-w-full bg-white border border-gray-300">
+                <thead>
+                    <tr>
+                        <th class="border px-4 py-2">ID</th>
+                        <th class="border px-4 py-2">Name</th>
+                        <th class="border px-4 py-2">Phone</th>
+                        <th class="border px-4 py-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% customers.forEach(customer => { %>
+                        <tr>
+                            <td class="border px-4 py-2"><%= customer.Customer_ID %></td>
+                            <td class="border px-4 py-2"><%= customer.Customer_Name %></td>
+                            <td class="border px-4 py-2"><%= customer.Customer_Phonenumber %></td>
+                            <td class="border px-4 py-2">
+                                <button onclick="editCustomer(<%= customer.Customer_ID %>)" class="bg-blue-500 text-white px-2 py-1 rounded">Edit</button>
+                                <button onclick="deleteCustomer(<%= customer.Customer_ID %>)" class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Employee Section -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Employees</h2>
+            <table class="min-w-full bg-white border border-gray-300">
+                <thead>
+                    <tr>
+                        <th class="border px-4 py-2">ID</th>
+                        <th class="border px-4 py-2">Name</th>
+                        <th class="border px-4 py-2">Position</th>
+                        <th class="border px-4 py-2">Phone</th>
+                        <th class="border px-4 py-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% employees.forEach(employee => { %>
+                        <tr>
+                            <td class="border px-4 py-2"><%= employee.Employees_ID %></td>
+                            <td class="border px-4 py-2"><%= employee.Employees_Name %></td>
+                            <td class="border px-4 py-2"><%= employee.Employees_Position %></td>
+                            <td class="border px-4 py-2"><%= employee.Employees_Phonenumber %></td>
+                            <td class="border px-4 py-2">
+                                <button onclick="editEmployee(<%= employee.Employees_ID %>)" class="bg-blue-500 text-white px-2 py-1 rounded">Edit</button>
+                                <button onclick="deleteEmployee(<%= employee.Employees_ID %>)" class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Product Section -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Products</h2>
+            <table class="min-w-full bg-white border border-gray-300">
+                <thead>
+                    <tr>
+                        <th class="border px-4 py-2">ID</th>
+                        <th class="border px-4 py-2">Name</th>
+                        <th class="border px-4 py-2">Price</th>
+                        <th class="border px-4 py-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% products.forEach(product => { %>
+                        <tr>
+                            <td class="border px-4 py-2"><%= product.Product_ID %></td>
+                            <td class="border px-4 py-2"><%= product.Product_Name %></td>
+                            <td class="border px-4 py-2"><%= product.Product_Price %> ฿</td>
+                            <td class="border px-4 py-2">
+                                <button onclick="editProduct(<%= product.Product_ID %>)" class="bg-blue-500 text-white px-2 py-1 rounded">Edit</button>
+                                <button onclick="deleteProduct(<%= product.Product_ID %>)" class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Order Section -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Orders</h2>
+            <table class="min-w-full bg-white border border-gray-300">
+                <thead>
+                    <tr>
+                        <th class="border px-4 py-2">ID</th>
+                        <th class="border px-4 py-2">Customer ID</th>
+                        <th class="border px-4 py-2">Product ID</th>
+                        <th class="border px-4 py-2">Quantity</th>
+                        <th class="border px-4 py-2">Total Price</th>
+                        <th class="border px-4 py-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% orders.forEach(order => { %>
+                        <tr>
+                            <td class="border px-4 py-2"><%= order.Order_ID %></td>
+                            <td class="border px-4 py-2"><%= order.Order_Customer_ID %></td>
+                            <td class="border px-4 py-2"><%= order.Order_Product_ID %></td>
+                            <td class="border px-4 py-2"><%= order.Order_Quantity %></td>
+                            <td class="border px-4 py-2"><%= order.Order_Total_Price %> ฿</td>
+                            <td class="border px-4 py-2">
+                                <button onclick="editOrder(<%= order.Order_ID %>)" class="bg-blue-500 text-white px-2 py-1 rounded">Edit</button>
+                                <button onclick="deleteOrder(<%= order.Order_ID %>)" class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Payment Section -->
+<!-- Payment Section -->
+<h2>Payments Overview</h2>
+    <table class="table-auto w-full border-collapse border border-gray-300">
+        <thead>
+            <tr>
+                <th class="border px-4 py-2">Order ID</th>
+                <th class="border px-4 py-2">Customer Name</th>
+                <th class="border px-4 py-2">Customer Phone</th>
+                <th class="border px-4 py-2">Product Name</th>
+                <th class="border px-4 py-2">Quantity</th>
+                <th class="border px-4 py-2">Total Price</th>
+                <th class="border px-4 py-2">Order Date</th>
+                <th class="border px-4 py-2">Payment Type</th>
+                <th class="border px-4 py-2">Promotion Discount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% payments.forEach(payment => { %>
+                <tr>
+                    <td class="border px-4 py-2"><%= payment.Order_ID %></td>
+                    <td class="border px-4 py-2"><%= payment.Customer_Name %></td>
+                    <td class="border px-4 py-2"><%= payment.Customer_Phonenumber %></td>
+                    <td class="border px-4 py-2"><%= payment.Order_Product_Name %></td>
+                    <td class="border px-4 py-2"><%= payment.Order_Quantity %></td>
+                    <td class="border px-4 py-2"><%= payment.TotalPrice %> ฿</td>
+                    <td class="border px-4 py-2"><%= payment.Order_Datetime %></td>
+                    <td class="border px-4 py-2"><%= payment.Payment_Type %></td>
+                    <td class="border px-4 py-2">
+                        <% if (payment.Promotion_Discount !== null) { %>
+                            <%= payment.Promotion_Discount %> %
+                        <% } else { %>
+                            <!-- ไม่มีการแสดงอะไรเลยถ้าไม่มีโปรโมชัน -->
+                        <% } %>
+                    </td>                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+
+
+
+        <!-- Promotion Section -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Promotions</h2>
+            <table class="min-w-full bg-white border border-gray-300">
+                <thead>
+                    <tr>
+                        <th class="border px-4 py-2">ID</th>
+                        <th class="border px-4 py-2">Name</th>
+                        <th class="border px-4 py-2">Discount (%)</th>
+                        <th class="border px-4 py-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% promotions.forEach(promotion => { %>
+                        <tr>
+                            <td class="border px-4 py-2"><%= promotion.Promotion_ID %></td>
+                            <td class="border px-4 py-2"><%= promotion.Promotion_Name %></td>
+                            <td class="border px-4 py-2"><%= promotion.Promotion_Discount %> %</td>
+                            <td class="border px-4 py-2">
+                                <button onclick="editPromotion(<%= promotion.Promotion_ID %>)" class="bg-blue-500 text-white px-2 py-1 rounded">Edit</button>
+                                <button onclick="deletePromotion(<%= promotion.Promotion_ID %>)" class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Delivery Section -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Deliveries</h2>
+            <table class="min-w-full bg-white border border-gray-300">
+                <thead>
+                    <tr>
+                        <th class="border px-4 py-2">ID</th>
+                        <th class="border px-4 py-2">Status</th>
+                        <th class="border px-4 py-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% deliveries.forEach(delivery => { %>
+                        <tr>
+                            <td class="border px-4 py-2"><%= delivery.Delivery_ID %></td>
+                            <td class="border px-4 py-2"><%= delivery.Delivery_Status %></td>
+                            <td class="border px-4 py-2">
+                                <button onclick="editDelivery(<%= delivery.Delivery_ID %>)" class="bg-blue-500 text-white px-2 py-1 rounded">Edit</button>
+                                <button onclick="deleteDelivery(<%= delivery.Delivery_ID %>)" class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </section>
+
+    </main>
+
+    <script>
+        function editMaterial(id) {
+            window.location.href = `/edit-material?id=${id}`;
+        }
+
+        function deleteMaterial(id) {
+            if (confirm('Are you sure you want to delete this material?')) {
+                fetch(`/delete-material?id=${id}`, { method: 'DELETE' })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Material deleted successfully');
+                            location.reload();
+                        } else {
+                            alert('Error deleting material');
+                        }
+                    });
+            }
+        }
+
+        function editCustomer(id) {
+            window.location.href = `/edit-customer?id=${id}`;
+        }
+
+        function deleteCustomer(id) {
+            if (confirm('Are you sure you want to delete this customer?')) {
+                fetch(`/delete-customer?id=${id}`, { method: 'DELETE' })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Customer deleted successfully');
+                            location.reload();
+                        } else {
+                            alert('Error deleting customer');
+                        }
+                    });
+            }
+        }
+
+        function editEmployee(id) {
+            window.location.href = `/edit-employee?id=${id}`;
+        }
+
+        function deleteEmployee(id) {
+            if (confirm('Are you sure you want to delete this employee?')) {
+                fetch(`/delete-employee?id=${id}`, { method: 'DELETE' })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Employee deleted successfully');
+                            location.reload();
+                        } else {
+                            alert('Error deleting employee');
+                        }
+                    });
+            }
+        }
+
+        function editProduct(id) {
+            window.location.href = `/edit-product?id=${id}`;
+        }
+
+        function deleteProduct(id) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                fetch(`/delete-product?id=${id}`, { method: 'DELETE' })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Product deleted successfully');
+                            location.reload();
+                        } else {
+                            alert('Error deleting product');
+                        }
+                    });
+            }
+        }
+
+        function editOrder(id) {
+            window.location.href = `/edit-order?id=${id}`;
+        }
+
+        function deleteOrder(id) {
+            if (confirm('Are you sure you want to delete this order?')) {
+                fetch(`/delete-order?id=${id}`, { method: 'DELETE' })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Order deleted successfully');
+                            location.reload();
+                        } else {
+                            alert('Error deleting order');
+                        }
+                    });
+            }
+        }
+
+        function editPayment(id) {
+            window.location.href = `/edit-payment?id=${id}`;
+        }
+
+        function deletePayment(id) {
+            if (confirm('Are you sure you want to delete this payment?')) {
+                fetch(`/delete-payment?id=${id}`, { method: 'DELETE' })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Payment deleted successfully');
+                            location.reload();
+                        } else {
+                            alert('Error deleting payment');
+                        }
+                    });
+            }
+        }
+
+        function editPromotion(id) {
+            window.location.href = `/edit-promotion?id=${id}`;
+        }
+
+        function deletePromotion(id) {
+            if (confirm('Are you sure you want to delete this promotion?')) {
+                fetch(`/delete-promotion?id=${id}`, { method: 'DELETE' })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Promotion deleted successfully');
+                            location.reload();
+                        } else {
+                            alert('Error deleting promotion');
+                        }
+                    });
+            }
+        }
+
+        function editDelivery(id) {
+            window.location.href = `/edit-delivery?id=${id}`;
+        }
+
+        function deleteDelivery(id) {
+            if (confirm('Are you sure you want to delete this delivery?')) {
+                fetch(`/delete-delivery?id=${id}`, { method: 'DELETE' })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Delivery deleted successfully');
+                            location.reload();
+                        } else {
+                            alert('Error deleting delivery');
+                        }
+                    });
+            }
+        }
+    </script>
+</body>
+</html> 

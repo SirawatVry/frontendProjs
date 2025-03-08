@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Employee</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#f8f3e7] text-gray-800">
+
+    <header class="bg-[#f8f3e7] py-4">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <div class="text-2xl font-bold">Edit Employee</div>
+            <div>
+                <a href="/admin" class="bg-[#ffb84d] text-white px-4 py-2 rounded">Back to Admin</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <form action="/update-employee" method="POST">
+            <input type="hidden" name="id" value="<%= employee.Employees_ID %>">
+            <div class="mb-4">
+                <label for="name" class="block text-gray-700">Employee Name</label>
+                <input type="text" id="name" name="name" value="<%= employee.Employees_Name %>" required class="border rounded-lg w-full p-2" />
+            </div>
+            <div class="mb-4">
+                <label for="position" class="block text-gray-700">Position</label>
+                <input type="text" id="position" name="position" value="<%= employee.Employees_Position %>" required class="border rounded-lg w-full p-2" />
+            </div>
+            <div class="mb-4">
+                <label for="phone" class="block text-gray-700">Phone Number</label>
+                <input type="text" id="phone" name="phone" value="<%= employee.Employees_Phonenumber %>" required class="border rounded-lg w-full p-2" />
+            </div>
+            <button type="submit" class="bg-[#ffb84d] text-white px-4 py-2 rounded">Update Employee</button>
+        </form>
+    </main>
+</body>
+</html>
