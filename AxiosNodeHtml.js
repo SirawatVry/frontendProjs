@@ -453,19 +453,38 @@ app.get('/payments/edit/:id', async (req, res) => {
 });
 
 app.post('/payments/edit/:id', async (req, res) => {
-    const { type, amount, date, promotionId, status, orderId } = req.body;
-    await Payment.update(
-        { 
-            Payment_Type: type, 
-            Payment_Amount: amount, 
-            Payment_Date: date, 
-            Payment_Promotion_ID: promotionId, 
-            Payment_Status: status, 
-            Payment_Order_ID: orderId 
-        },
-        { where: { Payment_ID: req.params.id } }
-    );
-    res.redirect('/payments');
+    const { type, amount, date, status, orderId } = req.body;
+
+    // ตรวจสอบข้อมูลที่ได้รับ
+    if (!type || !amount || !date || !status || !orderId) {
+        return res.status(400).send('All fields are required');
+    }
+    try {
+        const orderExists = await Order.findByPk(orderId);
+        if (!orderExists) {
+            return res.status(400).send('Order ID does not exist');
+        }
+
+        const [updated] = await Payment.update(
+            { 
+                Payment_Type: type, 
+                Payment_Amount: amount, 
+                Payment_Date: date, 
+                Payment_Status: status, 
+                Payment_Order_ID: orderId 
+            },
+            { where: { Payment_ID: req.params.id } }
+        );
+
+        if (updated) {
+            res.redirect('/payments');
+        } else {
+            res.status(404).send('Payment not found');
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
 });
 
 app.get('/payments/delete/:id', async (req, res) => {
