@@ -261,7 +261,7 @@ app.post('http://10.104.7.167:5001', async (req, res) => {
         const customer = await Customer.findOne({ where: { Customer_Phonenumber: phone } });
         if (customer) {
             console.log('Customer found:', customer.Customer_ID); // Debugging
-            return res.redirect(`/menu ?customerId=${customer.Customer_ID}`);
+            return res.redirect(`/menu?customerId=${customer.Customer_ID}`);
         }
 
         const employee = await Employees.findOne({ where: { Employees_Phonenumber: phone, Employees_Position: 'admin' } });
