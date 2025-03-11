@@ -1,7 +1,7 @@
 const axios = require('axios');
 const express = require('express');
 
-const CLOUD_URL = '10.104.7.167/'; 
+const CLOUD_URL = '10.104.7.167:5001'; 
 
 const { Sequelize, sequelize, Product, Order, Payment, Customer ,MaterialProduct,Material,Delivery,Employees,customerId,Promotion} = require('./model/index');
 
@@ -269,7 +269,7 @@ app.post('/', async (req, res) => {
             console.log('Admin found, redirecting to admin page'); // Debugging
             return res.redirect('/admin');
         }
-        return res.redirect(`/login`);    
+        return res.redirect(`/`);    
     } catch (error) {
         console.error('Error during login:', error);
         res.status(500).send('Internal server error');
