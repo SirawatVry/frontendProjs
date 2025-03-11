@@ -9,7 +9,7 @@ const { Sequelize, sequelize, Product, Order, Payment, Customer ,MaterialProduct
 
 const app = express();
 app.use(express.json());
-const port = 3000;
+const port = process.env.PORT||3000;
 
 // ตั้งค่าให้ Express ใช้ EJS
 app.set('view engine', 'ejs');
