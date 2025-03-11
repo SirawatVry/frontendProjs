@@ -1,7 +1,7 @@
 const axios = require('axios');
 const express = require('express');
 
-const CLOUD_URL = '10.104.7.167'; 
+const CLOUD_URL = '10.104.7.167/'; 
 
 const { Sequelize, sequelize, Product, Order, Payment, Customer ,MaterialProduct,Material,Delivery,Employees,customerId,Promotion} = require('./model/index');
 
