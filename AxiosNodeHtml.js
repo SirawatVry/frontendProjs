@@ -277,9 +277,7 @@ app.post('/login', async (req, res) => {
 });
 
 // Example routes for menu and admin pages
-app.get('/menu', (req, res) => {
-    res.send('Welcome to the Menu Page!');
-});
+
 
 app.get('/admin', (req, res) => {
     res.render('admin');
