@@ -178,12 +178,12 @@
                 quantity,
                 paymentType,
                 promotionCode,
-                customerId 
+                customerId // ส่ง customerId ไปด้วย
             })
             .then(response => {
                 console.log('Payment successful:', response);
                 alert('Payment successful!');
-                window.location.href = `/customerId=${customerId}`; 
+                window.location.href = `/?customerId=${customerId}`; 
             })
             .catch(error => {
                 if (error.response && error.response.status === 400) {
