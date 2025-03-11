@@ -249,11 +249,11 @@ app.get('/shipping', async (req, res) => {
 
 
 // Route for login page
-app.get('/login', (req, res) => {
+app.get('/', (req, res) => {
     res.render('login');
 });
 
-app.post('/login', async (req, res) => {
+app.post('/', async (req, res) => {
     const { phone } = req.body;
     console.log('Login attempt with phone:', phone); // Debugging
 
