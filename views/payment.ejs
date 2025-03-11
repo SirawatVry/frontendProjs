@@ -10,175 +10,31 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
         body {
- font-family: 'Arial', sans-serif;
- margin: 0;
- padding: 0;
- background-color: #f4f1eb;
-}
-
-/* โครงสร้างหลัก */
-.container {
- display: flex;
-}
-
-/* Sidebar */
-.sidebar {
- width: 260px;
- background-color: #6F4E37; /* โทนกาแฟ */
- color: white;
- height: 100vh;
- padding: 20px;
- box-shadow: 3px 0 10px rgba(0, 0, 0, 0.2);
-}
-
-.sidebar .logo {
- font-size: 24px;
- font-weight: bold;
- text-align: center;
- margin-bottom: 20px;
-}
-
-.sidebar ul {
- list-style-type: none;
- padding: 0;
-}
-
-.sidebar ul li {
- margin: 10px 0;
-}
-
-.sidebar ul li a {
- text-decoration: none;
- color: white;
- display: block;
- padding: 12px;
- border-radius: 5px;
- font-size: 16px;
-}
-
-.sidebar ul li a:hover {
- background-color: #9C6B3B; /* โทนเข้มขึ้น */
-}
-
-/* ปุ่ม Logout */
-.logout {
- color: #ffdddd;
-}
-
-.logout:hover {
- background-color: #cc4444;
-}
-
-/* ส่วนเนื้อหา */
-.content {
- flex-grow: 1;
- padding: 30px;
- text-align: center;
-}
-
-/* Styling for the table */
-table {
- width: 100%;
- border-collapse: collapse;
- margin-top: 20px;
-}
-
-table th, table td {
- border: 1px solid #ddd;
- padding: 10px;
- text-align: left;
-}
-
-table th {
- background-color: #f2f2f2;
- color: #333;
-}
-
-table td {
- background-color: #fff;
-}
-
-table tr:nth-child(even) {
- background-color: #f9f9f9;
-}
-
-table a {
- text-decoration: none;
- color: #007bff;
- margin-right: 10px;
-}
-
-table a:hover {
- text-decoration: underline;
-}
-
-button {
- padding: 5px 10px;
- border: none;
- background-color: #f44336;
- color: white;
- cursor: pointer;
- font-size: 14px;
- border-radius: 5px;
-}
-
-button:hover {
- background-color: #d32f2f;
-}
-
-form {
- display: inline;
-}
-
-h2 {
- margin-top: 20px;
- color: #333;
-}
-             .logo a {
-         font-size: 24px; /* ขนาดตัวอักษร */
-         font-weight: bold; /* หนักตัวอักษร */
-         text-decoration: none; /* ไม่มีเส้นใต้ */
-         color: #fff; /* สีข้อความ */
-         background-color: #d35400; /* สีพื้นหลัง */
-         padding: 10px 20px; /* เพิ่มพื้นที่รอบข้อความ */
-         border-radius: 5px; /* มุมโค้งมน */
-         display: inline-block; /* ให้แสดงในบล็อกเดียว */
-         transition: background-color 0.3s ease; /* การเปลี่ยนสีพื้นหลังเมื่อโฮเวอร์ */
-     }
-
-     /* เพิ่มสีพื้นหลังเมื่อโฮเวอร์ */
-     .logo a:hover {
-         background-color: #e67e22; /* เปลี่ยนเป็นสีส้มอ่อนเมื่อโฮเวอร์ */
-     }
-
-     /* การจัดตำแหน่งให้ตรงกลาง */
-     .logo {
-         text-align: center; /* จัดกลาง */
-     }
- </style>
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f1eb;
+        }
+    </style>
 </head>
 <body class="bg-[#f5e9d7] text-black">
-    <header class="flex justify-between items-center p-4 bg-[#f5e9d7]">
-        <nav class="flex space-x-4">
-            <div class="text-2xl font-bold">Coffee House</div>        </nav>
+    <header class="flex justify-between items-center p-4 bg-[#4A3A2F] text-white">
+        <div class="text-2xl font-bold">Coffee House</div>
     </header>
     <main class="flex flex-col lg:flex-row p-8">
         <div class="lg:w-2/3">
             <h1 class="text-3xl font-bold mb-8">Your Order</h1>
             <!-- Order Items -->
-            <div id="order-items">
-                <div class="flex items-center mb-4" id="product-<%= product.Product_ID %>">
+            <div id="order-items" class="mb-8">
+                <div class="flex items-center mb-4 border-b pb-4" id="product-<%= product.Product_ID %>">
                     <img alt="<%= product.Product_Name %>" class="w-24 h-24 object-cover mr-4" src="/uploads/<%= product.Product_image %>" />
                     <div class="flex-1">
                         <div class="flex justify-between items-center">
-                            <span><%= product.Product_Name %></span>
-                            <span class="product-price"><%= product.Product_Price %> B</span>
+                            <span class="font-semibold"><%= product.Product_Name %></span>
+                            <span class="product-price text-lg font-bold"><%= product.Product_Price %> B</span>
                         </div>
                         <div class="flex justify-between items-center mt-2">
                             <div class="flex items-center">
-                                <button class="px-2 py-1 border border-gray-300" onclick="updateQuantity('<%= product.Product_ID %>', -1)">-</button>
-                                <span class="px-4 quantity"><%= quantity %></span>
-                                <button class="px-2 py-1 border border-gray-300" onclick="updateQuantity('<%= product.Product_ID %>', 1)">+</button>
+                                <span class="px-4 py-1 bg-white-200 rounded-full text-center"><%= quantity %></span>
+                                <span class="ml-2">Cup</span>
                             </div>
                         </div>
                     </div>
@@ -186,7 +42,7 @@ h2 {
             </div>
             <!-- Promotion Code Input -->
             <div class="flex justify-between mb-4">
-                <input id="promotion-code" class="border border-gray-300 px-4 py-2 rounded" placeholder="Enter promotion code" type="text"/>
+                <input id="promotion-code" class="border border-gray-300 px-4 py-2 rounded w-2/3" placeholder="Enter promotion code" type="text"/>
                 <button class="bg-yellow-600 text-white px-4 py-2 rounded" onclick="applyPromotion()">Apply</button>
             </div>
             <!-- Order Summary -->
@@ -300,8 +156,7 @@ h2 {
                     <p>After the transfer, please upload a receipt to complete your payment.</p>
                 `;
             } else if (method === 'COD') {
-                paymentInfoDiv.innerHTML = `
-                    <p>You have selected "Cash on Delivery". Please have the total amount ready when the delivery arrives.</p>
+                paymentInfoDiv.innerHTML = `                    <p>You have selected "Cash on Delivery". Please have the total amount ready when the delivery arrives.</p>
                 `;
             }
         }
@@ -316,6 +171,7 @@ h2 {
             const paymentType = document.querySelector('input[name="paymentType"]:checked').value; // Get the selected payment type
             const promotionCode = document.getElementById('promotion-code').value; // Get the promotion code
             const customerId = <%= customerId %>;
+
             // Send data to the server
             axios.post('/process-payment', {
                 productId,
@@ -328,7 +184,6 @@ h2 {
                 console.log('Payment successful:', response);
                 alert('Payment successful!');
                 window.location.href = `/?customerId=${customerId}`; 
-
             })
             .catch(error => {
                 if (error.response && error.response.status === 400) {

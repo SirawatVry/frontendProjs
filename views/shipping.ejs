@@ -15,46 +15,52 @@
     <header class="bg-[#ffb84d] py-4">
         <div class="container mx-auto flex justify-between items-center px-4">
             <div class="text-2xl font-bold text-white">Shipping Information</div>
-            <nav class="space-x-4">
-            </nav>
         </div>
     </header>
 
     <main class="container mx-auto px-4 py-12">
-        <h2 class="text-3xl font-bold text-center mb-8">Delivery Information</h2>
+        <h2 class="text-3xl font-bold text-center mb-8">Report Shipping</h2>
+        
         <div class="mt-8">
             <% if (deliveries && deliveries.length > 0) { %>
-                <div class="overflow-x-auto">
+                <% 
+                    // Get the first delivery to display customer information
+                    const firstDelivery = deliveries[0]; 
+                %>
+                <div class="mb-4 p-4 bg-white shadow-md rounded-lg">
+                    <h3 class="text-xl font-semibold">Customer</h3>
+                    <p><strong>Name:</strong> <%= firstDelivery.Order.Customer ? firstDelivery.Order.Customer.Customer_Name : 'N/A' %></p>
+                    <p><strong>Address:</strong> <%= firstDelivery.Order.Customer ? firstDelivery.Order.Customer.Customer_address : 'N/A' %></p>
+                </div>
+                
+                <div class="overflow-x-auto mt-8">
+                    <h3 class="text-xl font-semibold mb-4">Order Report</h3>
                     <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
                         <thead class="bg-[#ffb84d] text-white">
                             <tr>
                                 <th class="py-3 px-4 border-b">Order ID</th>
-                                <th class="py-3 px-4 border-b">Customer Name</th> <!-- เพิ่มคอลัมน์ Customer Name -->
-                                <th class="py-3 px-4 border-b">Customer Address</th> <!-- เพิ่มคอลัมน์ Customer Address -->
                                 <th class="py-3 px-4 border-b">Product Name</th>
                                 <th class="py-3 px-4 border-b">Quantity</th>
                                 <th class="py-3 px-4 border-b">Total Price</th>
                                 <th class="py-3 px-4 border-b">Order Date Time</th>
-                                <th class="py-3 px-4 border-b">Delivery Status</th>
-                                <th class="py-3 px-4 border-b">Delivery Date</th>
                                 <th class="py-3 px-4 border-b">Delivery Employee Name</th>
                                 <th class="py-3 px-4 border-b">Employee Phone Number</th>
+                                <th class="py-3 px-4 border-b">Delivery Status</th>
+                                <th class="py-3 px-4 border-b">Delivery Date</th>
                             </tr>
                         </thead>
                         <tbody>
                             <% deliveries.forEach(delivery => { %>
                                 <tr class="hover:bg-gray-100">
                                     <td class="py-2 px-4 border-b" style="text-align: center;"><%= delivery.Order ? delivery.Order.Order_ID : 'N/A' %></td>
-                                    <td class="py-2 px-4 border-b" style="text-align: center;"><%= delivery.Order.Customer ? delivery.Order.Customer.Customer_Name : 'N/A' %></td> <!-- แสดง Customer Name -->
-                                    <td class="py-2 px-4 border-b" style="text-align: center;"><%= delivery.Order.Customer ? delivery.Order.Customer.Customer_address : 'N/A' %></td> <!-- แสดง Customer Address -->
                                     <td class="py-2 px-4 border-b" style="text-align: center;"><%= delivery.Order.Product ? delivery.Order.Product.Product_Name : 'N/A' %></td>
                                     <td class="py-2 px-4 border-b" style="text-align: center;"><%= delivery.Order ? delivery.Order.Order_Quantity : 'N/A' %></td>
                                     <td class="py-2 px-4 border-b" style="text-align: center;"><%= delivery.Order ? delivery.Order.Order_Total_Price : 'N/A' %></td>
                                     <td class="py-2 px-4 border-b" style="text-align: center;"><%= delivery.Order ? new Date(delivery.Order.Order_Datetime).toLocaleString() : 'N/A' %></td>
-                                    <td class="py-2 px-4 border-b" style="text-align: center;"><%= delivery.Delivery_Status %></td>
-                                    <td class="py-2 px-4 border-b" style="text-align: center;"><%= new Date(delivery.Delivery_date).toLocaleString() %></td>
                                     <td class="py-2 px-4 border-b" style="text-align: center;"><%= delivery.Employee ? delivery.Employee.Employees_Name : 'N/A' %></td>
                                     <td class="py-2 px-4 border-b" style="text-align: center;"><%= delivery.Employee ? delivery.Employee.Employees_Phonenumber : 'N/A' %></td>
+                                    <td class="py-2 px-4 border-b" style="text-align: center;"><%= delivery.Delivery_Status %></td>
+                                    <td class="py-2 px-4 border-b" style="text-align: center;"><%= new Date(delivery.Delivery_date).toLocaleString() %></td>
                                 </tr>
                             <% }); %>
                         </tbody>

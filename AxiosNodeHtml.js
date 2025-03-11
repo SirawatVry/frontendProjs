@@ -1,6 +1,12 @@
 const axios = require('axios');
 const express = require('express');
-const { Sequelize, sequelize, Product, Order, Payment, Customer ,MaterialProduct,Material,Delivery,Employees,customerId,Promotion} = require('../backendProjs/index.js');
+
+const CLOUD_URL = 'http://10.104.20.104:4000/api/models'; 
+
+const { Sequelize, sequelize, Product, Order, Payment, Customer ,MaterialProduct,Material,Delivery,Employees,customerId,Promotion} = require('./model/index');
+
+
+
 const app = express();
 app.use(express.json());
 const port = 3000;
