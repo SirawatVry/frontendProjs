@@ -249,7 +249,7 @@ app.get('/shipping', async (req, res) => {
 
 
 // Route for login page
-app.get('http://10.104.7.167:5001', (req, res) => {
+app.get('http://10.104.7.167:5001/', (req, res) => {
     res.render('login');
 });
 
