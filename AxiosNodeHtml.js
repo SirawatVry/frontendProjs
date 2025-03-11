@@ -364,11 +364,18 @@ app.post('/customers/edit/:id', async (req, res) => {
 
 
 // Route to delete a customer
-app.get('/customers/delete/:id', async (req, res) => {
-    await Customer.destroy({ where: { Customer_ID: req.params.id } });
-    res.redirect('/customers');
-});
+app.get('/customers/delete/:id', (req, res) => {
+    const customerId = req.params.id;
+    const sql = 'DELETE FROM customers WHERE Customer_ID = ?';
 
+    connection.query(sql, [customerId], (error, results) => {
+        if (error) {
+            console.error('Error executing query:', error);
+            return res.status(500).send('Error deleting customer');
+        }
+        res.redirect('/customers');
+    });
+});
 // Repeat similar routes for Products
 app.get('/products', async (req, res) => {
     const products = await Product.findAll();
