@@ -306,7 +306,7 @@ app.post('/register', async (req, res) => {
             Customer_address: address
         });
 
-        res.redirect('/login');
+        res.redirect('/');
     } catch (error) {
         console.error('Error during registration:', error);
         res.status(500).send('Internal server error');
