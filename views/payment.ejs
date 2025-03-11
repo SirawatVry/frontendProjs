@@ -183,7 +183,7 @@
             .then(response => {
                 console.log('Payment successful:', response);
                 alert('Payment successful!');
-                window.location.href = `/menu`; 
+                window.location.href = `/menu?customerId=${customerId}`; 
             })
             .catch(error => {
                 if (error.response && error.response.status === 400) {
