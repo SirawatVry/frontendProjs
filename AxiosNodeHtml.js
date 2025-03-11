@@ -355,9 +355,8 @@ app.post('/customers/edit/:id', async (req, res) => {
 
         if (results.affectedRows > 0) {
             return res.redirect('/customers');
-        } else {
-            throw new Error('Customer not found');
-        }
+        } 
+        
     } catch (error) {
         console.error("Error updating customer:", error);
         res.status(500).send("Internal Server Error: " + error.message);
