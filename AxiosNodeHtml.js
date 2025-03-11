@@ -358,8 +358,7 @@ app.post('/customers/edit/:id', async (req, res) => {
         } 
         
     } catch (error) {
-        console.error("Error updating customer:", error);
-        res.status(500).send("Internal Server Error: " + error.message);
+
     }
 });
 
