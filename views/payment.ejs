@@ -174,32 +174,33 @@
 
             // Send data to the server
             axios.post('/process-payment', {
-                productId,
-                quantity,
-                paymentType,
-                promotionCode,
-                customerId // ส่ง customerId ไปด้วย
-            })
-            .then(response => {
-                console.log('Payment successful:', response);
-                alert('Payment successful!');
-                window.location.href = `/menu?customerId=${customerId}`; 
-            })
-            .catch(error => {
-                if (error.response && error.response.status === 400) {
-                    // Handle insufficient materials error
-                    const insufficientMaterials = error.response.data.insufficientMaterials;
-                    let message = 'Insufficient materials for the following items:\n';
-                    insufficientMaterials.forEach(item => {
-                        message += `Material ID: ${item.materialId}, Required: ${item.required}, Available: ${item.available}\n`;
-                    });
-                    alert(message);
-                } else {
-                    console.error('Error processing payment:', error);
-                    alert('Error processing payment');
-                }
-            });
-        }
+    productId,
+    quantity,
+    paymentType,
+    promotionCode,
+    customerId 
+})
+.then(response => {
+    if (response.status === 200) { // ตรวจสอบสถานะการตอบสนอง
+        console.log('Payment successful:', response);
+        alert('Payment successful!');
+        window.location.href = `/menu?customerId=${customerId}`; 
+    }
+})
+.catch(error => {
+    if (error.response && error.response.status === 400) {
+        // Handle insufficient materials error
+        const insufficientMaterials = error.response.data.insufficientMaterials;
+        let message = 'Insufficient materials for the following items:\n';
+        insufficientMaterials.forEach(item => {
+            message += `Material ID: ${item.materialId}, Required: ${item.required}, Available: ${item.available}\n`;
+        });
+        alert(message);
+    } else {
+        console.error('Error processing payment:', error);
+        alert('Error processing payment');
+    }
+});
 
         // Call this once on page load to initialize totals
         updateTotal();
