@@ -1,7 +1,7 @@
 const axios = require('axios');
 const express = require('express');
 
-const CLOUD_URL = 'http://10.104.20.104:4000/api/models'; 
+const BASE_URL = 'http://10.104.7.167:5001';
 
 const { Sequelize, sequelize, Product, Order, Payment, Customer ,MaterialProduct,Material,Delivery,Employees,customerId,Promotion} = require('./model/index');
 
@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // ดึงข้อมูลเมนูจากฐานข้อมูล
 // Main route to render the index page
-app.get('10.104.7.167:5001/', async (req, res) => {
+app.get('/', async (req, res) => {
     const customerId = req.query.customerId; // รับ customerId จาก query parameters
     console.log('Customer ID from query:', customerId); // Debugging
     try {
