@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // ดึงข้อมูลเมนูจากฐานข้อมูล
 // Main route to render the index page
-app.get('/', async (req, res) => {
+app.get('/menu', async (req, res) => {
     const customerId = req.query.customerId; // รับ customerId จาก query parameters
     console.log('Customer ID from query:', customerId); // Debugging
     try {
@@ -249,11 +249,11 @@ app.get('/shipping', async (req, res) => {
 
 
 // Route for login page
-app.get('/login', (req, res) => {
+app.get('/', (req, res) => {
     res.render('login');
 });
 
-app.post('/login', async (req, res) => {
+app.post('/', async (req, res) => {
     const { phone } = req.body;
     console.log('Login attempt with phone:', phone); // Debugging
 
@@ -261,7 +261,7 @@ app.post('/login', async (req, res) => {
         const customer = await Customer.findOne({ where: { Customer_Phonenumber: phone } });
         if (customer) {
             console.log('Customer found:', customer.Customer_ID); // Debugging
-            return res.redirect(`/?customerId=${customer.Customer_ID}`);
+            return res.redirect(`/menu?customerId=${customer.Customer_ID}`);
         }
 
         const employee = await Employees.findOne({ where: { Employees_Phonenumber: phone, Employees_Position: 'admin' } });
@@ -276,10 +276,6 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// Example routes for menu and admin pages
-app.get('/menu', (req, res) => {
-    res.send('Welcome to the Menu Page!');
-});
 
 app.get('/admin', (req, res) => {
     res.render('admin');
