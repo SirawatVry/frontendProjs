@@ -1,7 +1,7 @@
 const axios = require('axios');
 const express = require('express');
 
-const BASE_URL = 'http://10.104.7.167:5001';
+const CLOUD_URL = '10.104.7.167'; 
 
 const { Sequelize, sequelize, Product, Order, Payment, Customer ,MaterialProduct,Material,Delivery,Employees,customerId,Promotion} = require('./model/index');
 
@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // ดึงข้อมูลเมนูจากฐานข้อมูล
 // Main route to render the index page
-app.get('/menu', async (req, res) => {
+app.get('10.104.7.167:5001', async (req, res) => {
     const customerId = req.query.customerId; // รับ customerId จาก query parameters
     console.log('Customer ID from query:', customerId); // Debugging
     try {
@@ -249,11 +249,11 @@ app.get('/shipping', async (req, res) => {
 
 
 // Route for login page
-app.get('http://10.104.7.167:5001/', (req, res) => {
+app.get('/login', (req, res) => {
     res.render('login');
 });
 
-app.post('http://10.104.7.167:5001', async (req, res) => {
+app.post('/login', async (req, res) => {
     const { phone } = req.body;
     console.log('Login attempt with phone:', phone); // Debugging
 
@@ -261,7 +261,7 @@ app.post('http://10.104.7.167:5001', async (req, res) => {
         const customer = await Customer.findOne({ where: { Customer_Phonenumber: phone } });
         if (customer) {
             console.log('Customer found:', customer.Customer_ID); // Debugging
-            return res.redirect(`/menu`);
+            return res.redirect(`/?customerId=${customer.Customer_ID}`);
         }
 
         const employee = await Employees.findOne({ where: { Employees_Phonenumber: phone, Employees_Position: 'admin' } });
@@ -276,6 +276,10 @@ app.post('http://10.104.7.167:5001', async (req, res) => {
     }
 });
 
+// Example routes for menu and admin pages
+app.get('/menu', (req, res) => {
+    res.send('Welcome to the Menu Page!');
+});
 
 app.get('/admin', (req, res) => {
     res.render('admin');
