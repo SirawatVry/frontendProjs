@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // ดึงข้อมูลเมนูจากฐานข้อมูล
 // Main route to render the index page
-app.get('/menu  ', async (req, res) => {
+app.get('/menu', async (req, res) => {
     const customerId = req.query.customerId; // รับ customerId จาก query parameters
     console.log('Customer ID from query:', customerId); // Debugging
     try {
